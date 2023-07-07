@@ -134,6 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Course Sync.cpp" />
+    <ClCompile Include="Home.cpp" />
+    <ClCompile Include="Home.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Course Sync.rc" />

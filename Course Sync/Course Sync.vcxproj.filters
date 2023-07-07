@@ -32,6 +32,12 @@
     <ClCompile Include="Course Sync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Home.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Home.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Course Sync.rc">

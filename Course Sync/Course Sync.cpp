@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "Course Sync.h"
+#include "Home.h"
 
 #define MAX_LOADSTRING 100
 
@@ -143,12 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
-        }
+        Home::Display(hWnd);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
