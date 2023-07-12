@@ -1,4 +1,5 @@
 #include "Home.h"
+#include <Winuser.h>
 
 void Home::Display(HWND hWnd)
 {
@@ -53,14 +54,12 @@ void Home::Display(HWND hWnd)
     DrawText(hdc, L"Username:", -1, &usernameLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
 
     // Draw the username input field
-    HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
-    SelectObject(hdc, hInputFont);
     RECT usernameRect;
     SetRect(&usernameRect, newLeftMargin + labelWidth, 230, newRightMargin, 260); // Updated position
-    HBRUSH hInputBrush = CreateSolidBrush(RGB(255, 255, 255)); // White background color
-    FillRect(hdc, &usernameRect, hInputBrush);
-    DrawText(hdc, L"", -1, &usernameRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_EDITCONTROL | DT_NOCLIP | DT_NOPREFIX);
+    CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+        usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
+        hWnd, NULL, NULL, NULL);
+
 
     // Draw the password label
     RECT passwordLabelRect;
@@ -68,17 +67,15 @@ void Home::Display(HWND hWnd)
     DrawText(hdc, L"Password:", -1, &passwordLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
 
     // Draw the password input field
+   // Draw the password input field
     RECT passwordRect;
     SetRect(&passwordRect, newLeftMargin + labelWidth, 310, newRightMargin, 340); // Updated position
-    HBRUSH hPasswordBrush = CreateSolidBrush(RGB(255, 255, 255)); // White background color
-    FillRect(hdc, &passwordRect, hPasswordBrush);
-    DrawText(hdc, L"", -1, &passwordRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_EDITCONTROL | DT_NOCLIP | DT_NOPREFIX);
+    CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_PASSWORD,
+        passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top,
+        hWnd, NULL, NULL, NULL);
 
     // Cleanup
-    DeleteObject(hInputBrush);
-    DeleteObject(hPasswordBrush);
     DeleteObject(hLabelFont);
-    DeleteObject(hInputFont);
 
     // Draw the login button
     RECT buttonRect;
