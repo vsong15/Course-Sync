@@ -90,11 +90,6 @@ void Home::Display(HWND hWnd)
     SelectObject(hdc, hBorderPen);
     Rectangle(hdc, buttonRect.left, buttonRect.top, buttonRect.right, buttonRect.bottom);
 
-    // Draw the button label
-    HFONT hButtonFont = CreateFont(24, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
-    SelectObject(hdc, hButtonFont);
-
     // Set the background mode to transparent
     SetBkMode(hdc, TRANSPARENT);
 
@@ -107,6 +102,22 @@ void Home::Display(HWND hWnd)
 
     // Draw the centered text label
     TextOut(hdc, textX, textY, L"Login", 5);
+
+    // Create the button window
+    HWND hwndButton = CreateWindowW(
+        L"BUTTON",                   // Predefined class; Unicode assumed
+        L"Login",                    // Button text
+        WS_CHILD | WS_VISIBLE,       // Styles
+        buttonRect.left,             // x position
+        buttonRect.top,              // y position
+        buttonRect.right - buttonRect.left,    // Button width
+        buttonRect.bottom - buttonRect.top,    // Button height
+        hWnd,                      // Parent window
+        NULL,                        // No menu
+        NULL,                        // Instance handle
+        NULL                         // Additional application data
+    );
+
 
     EndPaint(hWnd, &ps);
 }
