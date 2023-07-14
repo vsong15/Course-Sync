@@ -100,11 +100,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
+   // Get the screen dimensions
    int screenWidth = GetSystemMetrics(SM_CXSCREEN);
    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_MINIMIZEBOX),
-       0, 0, screenWidth, screenHeight, nullptr, nullptr, hInstance, nullptr);
+   // Calculate the center position of the window
+   int windowWidth = 1280; // Set the desired width of the window
+   int windowHeight = 800; // Set the desired height of the window
+   int windowX = (screenWidth - windowWidth) / 2;
+   int windowY = (screenHeight - windowHeight) / 2;
+
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, 
+       windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
+
 
    if (!hWnd)
    {
@@ -131,13 +139,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-    case WM_CREATE:
-    {
-        // Maximize the window
-        ShowWindow(hWnd, SW_MAXIMIZE);
-        UpdateWindow(hWnd);
-    }
-    break;
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
