@@ -2,6 +2,10 @@
 #include <Winuser.h>
 #include "Constants.h"
 
+HWND Login::usernameTextBox = nullptr;
+HWND Login::passwordTextBox = nullptr;
+HWND Login::loginButton = nullptr;
+
 void Login::Display(HWND hWnd)
 {
     PAINTSTRUCT ps;
@@ -54,25 +58,38 @@ void Login::Display(HWND hWnd)
     SetRect(&usernameLabelRect, newLeftMargin, 230, newLeftMargin + labelWidth, 260); // Updated position
     DrawText(hdc, L"Username:", -1, &usernameLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
 
-    // Draw the username input field
+    // Update or create the username input field
     RECT usernameRect;
     SetRect(&usernameRect, newLeftMargin + labelWidth, 230, newRightMargin, 260); // Updated position
-    HWND usernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
-        usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
-        hWnd, NULL, NULL, NULL);
+    if (usernameTextBox != NULL)
+    {
+        SetWindowPos(usernameTextBox, NULL, usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        usernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+            usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
+            hWnd, NULL, NULL, NULL);
+    }
 
     // Draw the password label
     RECT passwordLabelRect;
     SetRect(&passwordLabelRect, newLeftMargin, 310, newLeftMargin + labelWidth, 340); // Updated position
     DrawText(hdc, L"Password:", -1, &passwordLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
 
-    // Draw the password input field
-   // Draw the password input field
+    // Update or create the password input field
     RECT passwordRect;
     SetRect(&passwordRect, newLeftMargin + labelWidth, 310, newRightMargin, 340); // Updated position
-    CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_PASSWORD,
-        passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top,
-        hWnd, NULL, NULL, NULL);
+    if (passwordTextBox != NULL)
+    {
+        SetWindowPos(passwordTextBox, NULL, passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        passwordTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_PASSWORD,
+            passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top,
+            hWnd, NULL, NULL, NULL);
+    }
 
     // Cleanup
     DeleteObject(hLabelFont);
@@ -81,14 +98,27 @@ void Login::Display(HWND hWnd)
     RECT buttonRect;
     SetRect(&buttonRect, width / 2 - 80, 380, width / 2 + 80, 420);
 
-    // Draw button background
-    HBRUSH hButtonBrush = CreateSolidBrush(RGB(79, 153, 202)); // Button color: #4f99ca
-    FillRect(hdc, &buttonRect, hButtonBrush);
-
-    // Draw button border
-    HPEN hBorderPen = CreatePen(PS_SOLID, 2, RGB(79, 153, 202)); // Border color: #b1cff1
-    SelectObject(hdc, hBorderPen);
-    Rectangle(hdc, buttonRect.left, buttonRect.top, buttonRect.right, buttonRect.bottom);
+    // Update or create the login button
+    if (loginButton != NULL)
+    {
+        SetWindowPos(loginButton, NULL, buttonRect.left, buttonRect.top, buttonRect.right - buttonRect.left, buttonRect.bottom - buttonRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        loginButton = CreateWindowW(
+            L"BUTTON",                   // Predefined class; Unicode assumed
+            L"Login",                    // Button text
+            WS_CHILD | WS_VISIBLE,       // Styles
+            buttonRect.left,             // x position
+            buttonRect.top,              // y position
+            buttonRect.right - buttonRect.left,    // Button width
+            buttonRect.bottom - buttonRect.top,    // Button height
+            hWnd,                      // Parent window
+            (HMENU)ID_BUTTON_LOGIN,                        // No menu
+            NULL,                        // Instance handle
+            NULL                         // Additional application data
+        );
+    }
 
     // Set the background mode to transparent
     SetBkMode(hdc, TRANSPARENT);
@@ -97,29 +127,7 @@ void Login::Display(HWND hWnd)
     int textHeight = buttonRect.bottom - buttonRect.top;
     SIZE textSize;
     GetTextExtentPoint32(hdc, L"Login", 5, &textSize); // Measure the text size
-    int textX = buttonRect.left + (buttonRect.right - buttonRect.left - textSize.cx) / 2;
-    int textY = buttonRect.top + (buttonRect.bottom - buttonRect.top - textSize.cy) / 2;
 
-    // Draw the centered text label
-    TextOut(hdc, textX, textY, L"Login", 5);
-
-    // Create the button window
-    HWND hwndButton = CreateWindowW(
-        L"BUTTON",                   // Predefined class; Unicode assumed
-        L"Login",                    // Button text
-        WS_CHILD | WS_VISIBLE,       // Styles
-        buttonRect.left,             // x position
-        buttonRect.top,              // y position
-        buttonRect.right - buttonRect.left,    // Button width
-        buttonRect.bottom - buttonRect.top,    // Button height
-        hWnd,                      // Parent window
-        (HMENU)ID_BUTTON_LOGIN,                        // No menu
-        NULL,                        // Instance handle
-        NULL                         // Additional application data
-    );
-
-
-    EndPaint(hWnd, &ps);
 }
 
 void Login::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height)
