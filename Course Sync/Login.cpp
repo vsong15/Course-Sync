@@ -1,7 +1,8 @@
 #include "Login.h"
 #include <Winuser.h>
+#include "Constants.h"
 
-void Home::Display(HWND hWnd)
+void Login::Display(HWND hWnd)
 {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
@@ -56,10 +57,9 @@ void Home::Display(HWND hWnd)
     // Draw the username input field
     RECT usernameRect;
     SetRect(&usernameRect, newLeftMargin + labelWidth, 230, newRightMargin, 260); // Updated position
-    CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
+    HWND usernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
         usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
         hWnd, NULL, NULL, NULL);
-
 
     // Draw the password label
     RECT passwordLabelRect;
@@ -113,7 +113,7 @@ void Home::Display(HWND hWnd)
         buttonRect.right - buttonRect.left,    // Button width
         buttonRect.bottom - buttonRect.top,    // Button height
         hWnd,                      // Parent window
-        NULL,                        // No menu
+        (HMENU)ID_BUTTON_LOGIN,                        // No menu
         NULL,                        // Instance handle
         NULL                         // Additional application data
     );
@@ -122,7 +122,7 @@ void Home::Display(HWND hWnd)
     EndPaint(hWnd, &ps);
 }
 
-void Home::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height)
+void Login::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height)
 {
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);

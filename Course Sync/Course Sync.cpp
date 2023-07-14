@@ -4,6 +4,8 @@
 #include "framework.h"
 #include "Course Sync.h"
 #include "Login.h"
+#include "Home.h"
+#include "Constants.h"
 
 #define MAX_LOADSTRING 100
 
@@ -142,6 +144,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // Parse the menu selections:
         switch (wmId)
         {
+        case ID_BUTTON_LOGIN:
+        {
+            Home home;
+            InvalidateRect(hWnd, NULL, TRUE);
+            home.Display(hWnd);
+            break;
+        }
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;
@@ -154,7 +163,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_PAINT:
-        Home::Display(hWnd);
+        Login::Display(hWnd);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

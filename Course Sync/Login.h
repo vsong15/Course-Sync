@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-class Home
+class Login
 {
 public:
     static void Display(HWND hWnd);

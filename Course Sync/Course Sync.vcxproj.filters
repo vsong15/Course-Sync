@@ -24,6 +24,12 @@
     <ClInclude Include="Course Sync.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Home.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Course Sync.cpp">
@@ -33,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Login.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Home.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
