@@ -3,7 +3,7 @@
 
 #include "framework.h"
 #include "Course Sync.h"
-#include "Home.h"
+#include "Login.h"
 
 #define MAX_LOADSTRING 100
 
