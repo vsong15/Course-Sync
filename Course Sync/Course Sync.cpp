@@ -137,6 +137,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static int activeWindow = 0;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -151,6 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Login::DestroyControls();
 
             Home home;
+            activeWindow = 1;
             InvalidateRect(hWnd, NULL, TRUE);
             home.Display(hWnd);
             break;
@@ -167,7 +170,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
     case WM_PAINT:
-        Login::Display(hWnd);
+        if (activeWindow == 0) {
+            Login::Display(hWnd);
+        }
+        else if (activeWindow == 1) {
+            Home::Display(hWnd);
+        }
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
