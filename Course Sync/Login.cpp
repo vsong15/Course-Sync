@@ -136,3 +136,24 @@ void Login::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int heigh
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 }
+
+void Login::DestroyControls()
+{
+    if (usernameTextBox)
+    {
+        DestroyWindow(usernameTextBox);
+        usernameTextBox = NULL;
+    }
+
+    if (passwordTextBox)
+    {
+        DestroyWindow(passwordTextBox);
+        passwordTextBox = NULL;
+    }
+
+    if (loginButton)
+    {
+        DestroyWindow(loginButton);
+        loginButton = NULL;
+    }
+}

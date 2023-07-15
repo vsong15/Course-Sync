@@ -147,6 +147,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case ID_BUTTON_LOGIN:
         {
+            Login login;
+            Login::DestroyControls();
+
             Home home;
             InvalidateRect(hWnd, NULL, TRUE);
             home.Display(hWnd);
