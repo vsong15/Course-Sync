@@ -157,3 +157,27 @@ void Login::DestroyControls()
         loginButton = NULL;
     }
 }
+
+std::wstring Login::GetUsername()
+{
+    int length = GetWindowTextLengthW(usernameTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(usernameTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
+std::wstring Login::GetPassword()
+{
+    int length = GetWindowTextLengthW(passwordTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(passwordTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}

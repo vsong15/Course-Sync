@@ -6,6 +6,7 @@
 #include "Login.h"
 #include "Home.h"
 #include "Constants.h"
+#include "DatabaseHelper.h"
 
 #define MAX_LOADSTRING 100
 
@@ -67,7 +68,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
+    WNDCLASSEXW wcex{};
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
@@ -149,13 +150,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case ID_BUTTON_LOGIN:
         {
-            Login login;
-            Login::DestroyControls();
+            std::wstring username = Login::GetUsername();
+            std::wstring password = Login::GetPassword();
 
-            Home home;
-            activeWindow = 1;
-            InvalidateRect(hWnd, NULL, TRUE);
-            home.Display(hWnd);
+            if (!username.empty() && !password.empty()) {
+                if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
+                    Login login;
+                    Login::DestroyControls();
+
+                    Home home;
+                    activeWindow = 1;
+                    InvalidateRect(hWnd, NULL, TRUE);
+                    home.Display(hWnd);
+                }
+                else {
+                    // User doesn't exist or credentials are incorrect
+                    // Show an error message or take appropriate action
+                }
+            }
+            else {
+                // Username or password field is empty
+                // Show an error message or take appropriate action
+            }
             break;
         }
         case IDM_ABOUT:
