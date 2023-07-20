@@ -5,6 +5,7 @@
 HWND Login::usernameTextBox = nullptr;
 HWND Login::passwordTextBox = nullptr;
 HWND Login::loginButton = nullptr;
+HWND Login::errorLabel = nullptr; // Define the static error label variable
 
 void Login::Display(HWND hWnd)
 {
@@ -156,6 +157,12 @@ void Login::DestroyControls()
         DestroyWindow(loginButton);
         loginButton = NULL;
     }
+
+    if (errorLabel != nullptr)
+    {
+        DestroyWindow(errorLabel);
+        errorLabel = nullptr;
+    }
 }
 
 std::wstring Login::GetUsername()
@@ -180,4 +187,40 @@ std::wstring Login::GetPassword()
         return buffer;
     }
     return L"";
+}
+
+void Login::DisplayError(HWND hWnd, LPCWSTR errorMessage)
+{
+    // Check if the error label already exists
+    if (errorLabel != nullptr)
+    {
+        // If the error label already exists, update its text
+        SetWindowTextW(errorLabel, errorMessage);
+    }
+    else
+    {
+        // If the error label doesn't exist, create it
+        RECT errorRect;
+        int errorLabelWidth = 300; // Set the desired width of the error label
+        int screenWidth = GetSystemMetrics(SM_CXFULLSCREEN); // Get the desktop width spanning all monitors
+
+        // Calculate the left margin for centering the error label
+        int leftMargin = (screenWidth - errorLabelWidth) / 2;
+
+        SetRect(&errorRect, leftMargin, 150, leftMargin + errorLabelWidth, 175); // Set the position above the text fields
+
+        errorLabel = CreateWindowW(
+            L"STATIC",                   // Predefined class; Unicode assumed
+            errorMessage,                 // Label text (error message)
+            WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,       // Styles
+            errorRect.left,             // x position
+            errorRect.top,              // y position
+            errorRect.right - errorRect.left,    // Label width
+            errorRect.bottom - errorRect.top,    // Label height
+            hWnd,                      // Parent window
+            NULL,                       // No menu
+            NULL,                       // Instance handle
+            NULL                        // Additional application data
+        );
+    }
 }

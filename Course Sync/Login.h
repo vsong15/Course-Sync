@@ -18,4 +18,7 @@ public:
     // Add this function to get the entered username and password
     static std::wstring GetUsername();
     static std::wstring GetPassword();
+
+    static void DisplayError(HWND hWnd, LPCWSTR errorMessage);
+    static HWND errorLabel;
 };

@@ -142,6 +142,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_SIZE:
+    {
+        Login login;
+        // Window size changed, reposition the error label
+        if (login.errorLabel != nullptr)
+        {
+            int errorLabelWidth = 300; // Set the desired width of the error label
+            int screenWidth = LOWORD(lParam); // Get the new window width
+
+            // Calculate the left margin for centering the error label
+            int leftMargin = (screenWidth - errorLabelWidth) / 2;
+
+            // Update the error label position
+            SetWindowPos(login.errorLabel, NULL, leftMargin, 150, errorLabelWidth, 25, SWP_NOZORDER);
+        }
+        return 0;
+    }
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -164,13 +181,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     home.Display(hWnd);
                 }
                 else {
-                    // User doesn't exist or credentials are incorrect
-                    // Show an error message or take appropriate action
+                    // Incorrect username or password
+                    Login::DisplayError(hWnd, L"Wrong username or password.");
                 }
             }
             else {
-                // Username or password field is empty
-                // Show an error message or take appropriate action
+                // Empty username or password field
+                Login::DisplayError(hWnd, L"Please enter both username and password.");
             }
             break;
         }
