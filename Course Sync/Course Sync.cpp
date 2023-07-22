@@ -106,8 +106,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
    // Calculate the center position of the window
-   int windowWidth = 1280; // Set the desired width of the window
-   int windowHeight = 800; // Set the desired height of the window
+   int windowWidth = 800; // Set the desired width of the window
+   int windowHeight = 600; // Set the desired height of the window
    int windowX = (screenWidth - windowWidth) / 2;
    int windowY = (screenHeight - windowHeight) / 2;
 
@@ -142,6 +142,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+    case WM_GETMINMAXINFO:
+    {
+        // Get the system's DPI scaling
+        HDC hdc = GetDC(hWnd);
+        int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+        int dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
+        ReleaseDC(hWnd, hdc);
+
+        // Calculate the minimum window size based on the DPI scaling
+        int minWidth = MulDiv(800, dpiX, 96); // Set the desired minimum width (800) and adjust based on DPI scaling
+        int minHeight = MulDiv(600, dpiY, 96); // Set the desired minimum height (600) and adjust based on DPI scaling
+
+        // Set the minimum window size
+        MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
+        pMinMaxInfo->ptMinTrackSize.x = minWidth;
+        pMinMaxInfo->ptMinTrackSize.y = minHeight;
+
+        return 0;
+    }
+
     case WM_SIZE:
     {
         Login login;
