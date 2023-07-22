@@ -51,13 +51,38 @@ void Login::Display(HWND hWnd)
     int newLeftMargin = leftMargin - 40;  // Decrease the left margin
     int newRightMargin = leftMargin + textFieldWidth + labelWidth + 40;  // Increase the right margin
 
-    // Draw the username label
-    HFONT hLabelFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
-    SelectObject(hdc, hLabelFont);
+    // Define the desired font size for the username label
+    int usernameLabelFontSize = 22;
+
+    // Create the font with the desired size for the username label
+    HFONT hUsernameLabelFont = CreateFont(
+        usernameLabelFontSize, // Font height (size)
+        0, // Width of characters (0 = default)
+        0, // Angle of escapement (0 = default)
+        0, // Orientation angle (0 = default)
+        FW_NORMAL, // Font weight (normal)
+        FALSE, // Italic
+        FALSE, // Underline
+        FALSE, // Strikeout
+        DEFAULT_CHARSET, // Character set
+        OUT_DEFAULT_PRECIS, // Output precision
+        CLIP_DEFAULT_PRECIS, // Clipping precision
+        DEFAULT_QUALITY, // Output quality
+        DEFAULT_PITCH | FF_DONTCARE, // Pitch and family
+        L"Arial" // Font face name
+    );
+
+    // Select the font into the device context for the username label
+    HFONT hPrevUsernameLabelFont = (HFONT)SelectObject(hdc, hUsernameLabelFont);
+
+    // Draw the username label with the updated font
     RECT usernameLabelRect;
     SetRect(&usernameLabelRect, newLeftMargin, 230, newLeftMargin + labelWidth, 260); // Updated position
     DrawText(hdc, L"Username:", -1, &usernameLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
+
+    // Restore the previous font for the username label and release the new font
+    SelectObject(hdc, hPrevUsernameLabelFont);
+    DeleteObject(hUsernameLabelFont);
 
     // Update or create the username input field
     RECT usernameRect;
@@ -71,12 +96,44 @@ void Login::Display(HWND hWnd)
         usernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
             usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
             hWnd, NULL, NULL, NULL);
+
+        HFONT hUsernameFont = CreateFont(22, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(usernameTextBox, WM_SETFONT, (WPARAM)hUsernameFont, TRUE);
     }
 
-    // Draw the password label
+    // Define the desired font size for the password label
+    int passwordLabelFontSize = 22;
+
+    // Create the font with the desired size for the password label
+    HFONT hPasswordLabelFont = CreateFont(
+        passwordLabelFontSize, // Font height (size)
+        0, // Width of characters (0 = default)
+        0, // Angle of escapement (0 = default)
+        0, // Orientation angle (0 = default)
+        FW_NORMAL, // Font weight (normal)
+        FALSE, // Italic
+        FALSE, // Underline
+        FALSE, // Strikeout
+        DEFAULT_CHARSET, // Character set
+        OUT_DEFAULT_PRECIS, // Output precision
+        CLIP_DEFAULT_PRECIS, // Clipping precision
+        DEFAULT_QUALITY, // Output quality
+        DEFAULT_PITCH | FF_DONTCARE, // Pitch and family
+        L"Arial" // Font face name
+    );
+
+    // Select the font into the device context for the password label
+    HFONT hPrevPasswordLabelFont = (HFONT)SelectObject(hdc, hPasswordLabelFont);
+
+    // Draw the password label with the updated font
     RECT passwordLabelRect;
     SetRect(&passwordLabelRect, newLeftMargin, 310, newLeftMargin + labelWidth, 340); // Updated position
     DrawText(hdc, L"Password:", -1, &passwordLabelRect, DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_NOCLIP | DT_NOPREFIX);
+
+    // Restore the previous font for the password label and release the new font
+    SelectObject(hdc, hPrevPasswordLabelFont);
+    DeleteObject(hPasswordLabelFont);
 
     // Update or create the password input field
     RECT passwordRect;
@@ -90,10 +147,11 @@ void Login::Display(HWND hWnd)
         passwordTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_PASSWORD,
             passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top,
             hWnd, NULL, NULL, NULL);
-    }
 
-    // Cleanup
-    DeleteObject(hLabelFont);
+        HFONT hPasswordFont = CreateFont(22, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(passwordTextBox, WM_SETFONT, (WPARAM)hPasswordFont, TRUE);
+    }
 
     // Draw the login button
     RECT buttonRect;
