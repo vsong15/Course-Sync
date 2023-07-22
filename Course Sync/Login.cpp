@@ -200,27 +200,29 @@ void Login::DisplayError(HWND hWnd, LPCWSTR errorMessage)
     else
     {
         // If the error label doesn't exist, create it
-        RECT errorRect;
+        RECT clientRect;
+        GetClientRect(hWnd, &clientRect); // Get the dimensions of the client area
+
         int errorLabelWidth = 300; // Set the desired width of the error label
-        int screenWidth = GetSystemMetrics(SM_CXFULLSCREEN); // Get the desktop width spanning all monitors
 
-        // Calculate the left margin for centering the error label
-        int leftMargin = (screenWidth - errorLabelWidth) / 2;
+        // Calculate the left margin for centering the error label within the client area
+        int leftMargin = (clientRect.right - clientRect.left - errorLabelWidth) / 2;
 
-        SetRect(&errorRect, leftMargin, 150, leftMargin + errorLabelWidth, 175); // Set the position above the text fields
+        // Set the position above the text fields
+        RECT errorRect = { leftMargin, 150, leftMargin + errorLabelWidth, 175 };
 
         errorLabel = CreateWindowW(
-            L"STATIC",                   // Predefined class; Unicode assumed
-            errorMessage,                 // Label text (error message)
-            WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,       // Styles
-            errorRect.left,             // x position
-            errorRect.top,              // y position
-            errorRect.right - errorRect.left,    // Label width
-            errorRect.bottom - errorRect.top,    // Label height
-            hWnd,                      // Parent window
-            NULL,                       // No menu
-            NULL,                       // Instance handle
-            NULL                        // Additional application data
+            L"STATIC",                                // Predefined class; Unicode assumed
+            errorMessage,                              // Label text (error message)
+            WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,  // Styles
+            errorRect.left,                           // x position
+            errorRect.top,                            // y position
+            errorRect.right - errorRect.left,         // Label width
+            errorRect.bottom - errorRect.top,         // Label height
+            hWnd,                                     // Parent window
+            NULL,                                     // No menu
+            NULL,                                     // Instance handle
+            NULL                                      // Additional application data
         );
     }
 }
