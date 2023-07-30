@@ -80,7 +80,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>User32.lib;gdiplus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,6 +147,7 @@
     <ResourceCompile Include="Course Sync.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\courseSyncLogo.bmp" />
     <Image Include="Course Sync.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

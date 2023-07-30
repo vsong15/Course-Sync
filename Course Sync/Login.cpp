@@ -1,6 +1,11 @@
 #include "Login.h"
 #include <Winuser.h>
 #include "Constants.h"
+#include <Windows.h>
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
+
+using namespace Gdiplus;
 
 HWND Login::usernameTextBox = nullptr;
 HWND Login::passwordTextBox = nullptr;
@@ -9,6 +14,10 @@ HWND Login::errorLabel = nullptr; // Define the static error label variable
 
 void Login::Display(HWND hWnd)
 {
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -28,11 +37,18 @@ void Login::Display(HWND hWnd)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
-    // Draw the title
-    HFONT hTitleFont = CreateFont(48, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
-    SelectObject(hdc, hTitleFont);
-    DrawTextCenter(hdc, L"Course Sync", 20, width, height);
+    // Calculate the center position for the logo
+    int logoWidth = 300; // Set the desired width of the logo
+    int logoHeight = 60; // Set the desired height of the logo
+    int logoLeftMargin = (width - logoWidth) / 2;
+    int logoTopMargin = 10;
+
+    // Load the image using GDI+
+    Image image(L"courseSyncLogo.bmp");
+
+    // Draw the logo
+    Graphics graphics(hdc);
+    graphics.DrawImage(&image, logoLeftMargin, logoTopMargin, logoWidth, logoHeight);
 
     // Draw the description
     HFONT hDescFont = CreateFont(24, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
