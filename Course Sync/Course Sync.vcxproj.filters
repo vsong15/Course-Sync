@@ -30,6 +30,9 @@
     <ClInclude Include="Constants.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="DatabaseHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Course Sync.cpp">
@@ -44,6 +47,9 @@
     <ClCompile Include="Home.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DatabaseHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Course Sync.rc">
@@ -55,6 +61,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Course Sync.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="courseSyncLogo.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

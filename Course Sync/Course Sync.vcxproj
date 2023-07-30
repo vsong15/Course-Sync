@@ -147,8 +147,8 @@
     <ResourceCompile Include="Course Sync.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\courseSyncLogo.bmp" />
     <Image Include="Course Sync.ico" />
+    <Image Include="courseSyncLogo.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
