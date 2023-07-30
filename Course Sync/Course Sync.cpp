@@ -7,6 +7,11 @@
 #include "Home.h"
 #include "Constants.h"
 #include "DatabaseHelper.h"
+#include <windows.h>
+#include <objidl.h>
+#include <gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
 
 #define MAX_LOADSTRING 100
 
@@ -14,6 +19,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+ULONG_PTR g_GdiplusToken = 0;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -139,9 +145,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static int activeWindow = 0;
+    static bool gdiPlusInitialized = false;
 
     switch (message)
     {
+    case WM_CREATE:
+    {
+        // Initialize GDI+ only once during the creation of the window
+        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+        Gdiplus::GdiplusStartup(&g_GdiplusToken, &gdiplusStartupInput, NULL);
+        gdiPlusInitialized = true;
+        return 0;
+    }
     case WM_GETMINMAXINFO:
     {
         // Get the system's DPI scaling
@@ -231,6 +246,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
+        if (gdiPlusInitialized)
+        {
+            // Shutdown GDI+ when the window is destroyed
+            Gdiplus::GdiplusShutdown(g_GdiplusToken);
+            gdiPlusInitialized = false;
+        }
+
         PostQuitMessage(0);
         break;
     default:

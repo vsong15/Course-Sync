@@ -14,10 +14,6 @@ HWND Login::errorLabel = nullptr; // Define the static error label variable
 
 void Login::Display(HWND hWnd)
 {
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken;
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
 
