@@ -12,4 +12,5 @@ public:
     static PGresult* ExecuteQuery(PGconn* conn, const char* query);
     static bool CheckUser(const wchar_t* username, const wchar_t* password);
     static std::string WStringToString(const std::wstring& wstr);
+    static std::string GetRole(const wchar_t* username, const wchar_t* password);
 };

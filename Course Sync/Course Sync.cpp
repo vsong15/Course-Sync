@@ -207,13 +207,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if (!username.empty() && !password.empty()) {
                 if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
-                    Login login;
-                    Login::DestroyControls();
+                    // Get the role of the user
+                    std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
 
-                    Home home;
-                    activeWindow = 1;
-                    InvalidateRect(hWnd, NULL, TRUE);
-                    home.Display(hWnd);
+                    if (role == "administrator") {
+                        // Only display the home window if the role is "administrator"
+                        Login login;
+                        Login::DestroyControls();
+
+                        Home home;
+                        activeWindow = 1;
+                        InvalidateRect(hWnd, NULL, TRUE);
+                        home.Display(hWnd);
+
+                        // Show an alert to the user
+                        MessageBox(hWnd, L"Welcome, Administrator!", L"Welcome", MB_OK | MB_ICONINFORMATION);
+                    }
+                    else {
+                        // User is not an administrator, display an error message
+                        Login::DisplayError(hWnd, L"Only administrators can log in.");
+                    }
                 }
                 else {
                     // Incorrect username or password

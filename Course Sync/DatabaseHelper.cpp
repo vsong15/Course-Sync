@@ -83,3 +83,42 @@ std::string DatabaseHelper::WStringToString(const std::wstring& wstr)
 
     return result;
 }
+
+std::string DatabaseHelper::GetRole(const wchar_t* username, const wchar_t* password) {
+    std::string usernameUtf8 = WStringToString(username);
+    std::string passwordUtf8 = WStringToString(password);
+
+    if (usernameUtf8.empty() || passwordUtf8.empty()) {
+        // Error handling if the conversion fails or input is empty
+        return "";
+    }
+
+    // Replace 'your_db_name', 'your_db_user', 'your_db_password', 'your_db_host', and your_db_port'
+    // with the appropriate values for your PostgreSQL database configuration.
+    PGconn* conn = DatabaseHelper::ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return "";
+    }
+
+    // Create the query to get the role of the user
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT roles.Role_Name FROM users INNER JOIN roles ON users.Role_ID = roles.Role_ID WHERE Username='%s' AND Password='%s'", usernameUtf8.c_str(), passwordUtf8.c_str());
+
+    PGresult* result = DatabaseHelper::ExecuteQuery(conn, query);
+    if (!result) {
+        DatabaseHelper::CloseDatabaseConnection(conn);
+        return "";
+    }
+
+    std::string role = "";
+    int rowCount = PQntuples(result);
+    if (rowCount > 0) {
+        role = PQgetvalue(result, 0, 0);
+    }
+
+    PQclear(result);
+    DatabaseHelper::CloseDatabaseConnection(conn);
+
+    return role;
+}
