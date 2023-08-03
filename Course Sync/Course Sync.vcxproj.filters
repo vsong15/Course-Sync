@@ -24,7 +24,7 @@
     <ClInclude Include="Course Sync.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Home.h">
+    <ClInclude Include="Admin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
@@ -44,7 +44,7 @@
     <ClCompile Include="Login.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Home.cpp">
+    <ClCompile Include="Admin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DatabaseHelper.cpp">

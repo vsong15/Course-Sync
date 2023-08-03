@@ -1,7 +1,7 @@
-#include "Home.h"
+#include "Admin.h"
 #include <Winuser.h>
 
-void Home::Display(HWND hWnd) {
+void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -33,7 +33,7 @@ void Home::Display(HWND hWnd) {
     EndPaint(hWnd, &ps);
 }
 
-void Home::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height) {
+void Admin::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height) {
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);

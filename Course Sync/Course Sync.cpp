@@ -4,7 +4,7 @@
 #include "framework.h"
 #include "Course Sync.h"
 #include "Login.h"
-#include "Home.h"
+#include "Admin.h"
 #include "Constants.h"
 #include "DatabaseHelper.h"
 #include <windows.h>
@@ -215,10 +215,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         Login login;
                         Login::DestroyControls();
 
-                        Home home;
+                        Admin admin;
                         activeWindow = 1;
                         InvalidateRect(hWnd, NULL, TRUE);
-                        home.Display(hWnd);
+                        admin.Display(hWnd);
 
                         // Show an alert to the user
                         MessageBox(hWnd, L"Welcome, Administrator!", L"Welcome", MB_OK | MB_ICONINFORMATION);
@@ -255,7 +255,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             Login::Display(hWnd);
         }
         else if (activeWindow == 1) {
-            Home::Display(hWnd);
+            Admin::Display(hWnd);
         }
         break;
     case WM_DESTROY:
