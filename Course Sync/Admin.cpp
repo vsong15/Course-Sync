@@ -1,5 +1,8 @@
 #include "Admin.h"
 #include <Winuser.h>
+#include "Constants.h"
+
+HWND Admin::logoutButton = nullptr;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -24,6 +27,36 @@ void Admin::Display(HWND hWnd) {
     HBRUSH hDarkBrush = CreateSolidBrush(RGB(12, 42, 51)); 
     RECT navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
     FillRect(hdc, &navBarRect, hDarkBrush);
+
+    RECT buttonRect;
+    int buttonWidth = 120; // Adjust the button width as needed
+    int buttonHeight = 40; // Adjust the button height as needed
+    int buttonX = 14;      // Adjust the X position as needed
+    int buttonY = height - buttonHeight - 10; // Adjust the Y position as needed
+
+    SetRect(&buttonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+
+    // Update or create the login button
+    if (logoutButton != NULL)
+    {
+        SetWindowPos(logoutButton, NULL, buttonRect.left, buttonRect.top, buttonRect.right - buttonRect.left, buttonRect.bottom - buttonRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        logoutButton = CreateWindowW(
+            L"BUTTON",                   // Predefined class; Unicode assumed
+            L"Logout",                    // Button text
+            WS_CHILD | WS_VISIBLE,       // Styles
+            buttonRect.left,             // x position
+            buttonRect.top,              // y position
+            buttonRect.right - buttonRect.left,    // Button width
+            buttonRect.bottom - buttonRect.top,    // Button height
+            hWnd,                      // Parent window
+            (HMENU)ID_BUTTON_LOGOUT,                        // No menu
+            NULL,                        // Instance handle
+            NULL                         // Additional application data
+        );
+    }
 
     // Draw the "Welcome to Course Sync" text
     HFONT hWelcomeFont = CreateFont(36, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
