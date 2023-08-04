@@ -13,4 +13,6 @@ public:
     static bool CheckUser(const wchar_t* username, const wchar_t* password);
     static std::string WStringToString(const std::wstring& wstr);
     static std::string GetRole(const wchar_t* username, const wchar_t* password);
+    static std::string GetFirstName(const wchar_t* username, const wchar_t* password);
+    static std::string GetLastName(const wchar_t* username, const wchar_t* password);
 };

@@ -228,6 +228,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
                     // Get the role of the user
                     std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
+                    std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
+                    std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
 
                     if (role == "administrator") {
                         // Only display the home window if the role is "administrator"
@@ -239,8 +241,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         InvalidateRect(hWnd, NULL, TRUE);
                         admin.Display(hWnd);
 
-                        // Show an alert to the user
-                        MessageBox(hWnd, L"Welcome, Administrator!", L"Welcome", MB_OK | MB_ICONINFORMATION);
+                        // Construct the welcome message
+                        std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
+
+                        // Show the welcome message
+                        MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
                     }
                     else {
                         // User is not an administrator, display an error message

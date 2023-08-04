@@ -122,3 +122,77 @@ std::string DatabaseHelper::GetRole(const wchar_t* username, const wchar_t* pass
 
     return role;
 }
+
+std::string DatabaseHelper::GetFirstName(const wchar_t* username, const wchar_t* password) {
+    std::string usernameUtf8 = WStringToString(username);
+    std::string passwordUtf8 = WStringToString(password);
+
+    if (usernameUtf8.empty() || passwordUtf8.empty()) {
+        // Error handling if the conversion fails or input is empty
+        return "";
+    }
+
+    PGconn* conn = DatabaseHelper::ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return "";
+    }
+
+    // Create the query to get the first name of the user
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT First_Name FROM users WHERE Username='%s' AND Password='%s'", usernameUtf8.c_str(), passwordUtf8.c_str());
+
+    PGresult* result = DatabaseHelper::ExecuteQuery(conn, query);
+    if (!result) {
+        DatabaseHelper::CloseDatabaseConnection(conn);
+        return "";
+    }
+
+    std::string firstName = "";
+    int rowCount = PQntuples(result);
+    if (rowCount > 0) {
+        firstName = PQgetvalue(result, 0, 0);
+    }
+
+    PQclear(result);
+    DatabaseHelper::CloseDatabaseConnection(conn);
+
+    return firstName;
+}
+
+std::string DatabaseHelper::GetLastName(const wchar_t* username, const wchar_t* password) {
+    std::string usernameUtf8 = WStringToString(username);
+    std::string passwordUtf8 = WStringToString(password);
+
+    if (usernameUtf8.empty() || passwordUtf8.empty()) {
+        // Error handling if the conversion fails or input is empty
+        return "";
+    }
+
+    PGconn* conn = DatabaseHelper::ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return "";
+    }
+
+    // Create the query to get the last name of the user
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT Last_Name FROM users WHERE Username='%s' AND Password='%s'", usernameUtf8.c_str(), passwordUtf8.c_str());
+
+    PGresult* result = DatabaseHelper::ExecuteQuery(conn, query);
+    if (!result) {
+        DatabaseHelper::CloseDatabaseConnection(conn);
+        return "";
+    }
+
+    std::string lastName = "";
+    int rowCount = PQntuples(result);
+    if (rowCount > 0) {
+        lastName = PQgetvalue(result, 0, 0);
+    }
+
+    PQclear(result);
+    DatabaseHelper::CloseDatabaseConnection(conn);
+
+    return lastName;
+}
