@@ -200,6 +200,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // Parse the menu selections:
         switch (wmId)
         {
+        case ID_BUTTON_LOGOUT:
+            // Destroy controls in the active window
+            if (activeWindow == 1) {
+                Admin::DestroyControls();
+            }
+
+            // Clear the active window
+            activeWindow = 0;          
+
+            // Redraw the window content
+            InvalidateRect(hWnd, NULL, TRUE);
+
+            // Display the login window again
+            Login login;
+            login.Display(hWnd);
+
+            // Show a message indicating successful logout
+            MessageBox(hWnd, L"Logged out successfully.", L"Logout", MB_OK | MB_ICONINFORMATION);
+            break;
         case ID_BUTTON_LOGIN:
         {
             std::wstring username = Login::GetUsername();

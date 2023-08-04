@@ -75,3 +75,10 @@ void Admin::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int heigh
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 }
+
+void Admin::DestroyControls() {
+    if (logoutButton != nullptr) {
+        DestroyWindow(logoutButton);
+        logoutButton = nullptr;
+    }
+}
