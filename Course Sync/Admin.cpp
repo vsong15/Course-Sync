@@ -7,6 +7,7 @@
 using namespace Gdiplus;
 
 HWND Admin::logoutButton = nullptr;
+HWND Admin::dashboardButton = nullptr;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -32,18 +33,48 @@ void Admin::Display(HWND hWnd) {
     RECT navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
     FillRect(hdc, &navBarRect, hDarkBrush);
 
-    RECT buttonRect;
+    RECT dashboardButtonRect;
     int buttonWidth = 120; // Adjust the button width as needed
     int buttonHeight = 40; // Adjust the button height as needed
     int buttonX = 14;      // Adjust the X position as needed
-    int buttonY = height - buttonHeight - 10; // Adjust the Y position as needed
+    int buttonY = 60; // Adjust the Y position as needed
 
-    SetRect(&buttonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+    SetRect(&dashboardButtonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+
+    // Update or create the login button
+    if (dashboardButton != NULL)
+    {
+        SetWindowPos(dashboardButton, NULL, dashboardButtonRect.left, dashboardButtonRect.top, dashboardButtonRect.right - dashboardButtonRect.left, dashboardButtonRect.bottom - dashboardButtonRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        dashboardButton = CreateWindowW(
+            L"BUTTON",                   // Predefined class; Unicode assumed
+            L"Dashboard",                    // Button text
+            WS_CHILD | WS_VISIBLE,       // Styles
+            dashboardButtonRect.left,             // x position
+            dashboardButtonRect.top,              // y position
+            dashboardButtonRect.right - dashboardButtonRect.left,    // Button width
+            dashboardButtonRect.bottom - dashboardButtonRect.top,    // Button height
+            hWnd,                      // Parent window
+            (HMENU)ID_BUTTON_DASHBOARD,                        // No menu
+            NULL,                        // Instance handle
+            NULL                         // Additional application data
+        );
+    }
+
+    RECT logoutButtonRect;
+    buttonWidth = 120; // Adjust the button width as needed
+    buttonHeight = 40; // Adjust the button height as needed
+    buttonX = 14;      // Adjust the X position as needed
+    buttonY = height - buttonHeight - 10; // Adjust the Y position as needed
+
+    SetRect(&logoutButtonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
 
     // Update or create the login button
     if (logoutButton != NULL)
     {
-        SetWindowPos(logoutButton, NULL, buttonRect.left, buttonRect.top, buttonRect.right - buttonRect.left, buttonRect.bottom - buttonRect.top, SWP_NOZORDER);
+        SetWindowPos(logoutButton, NULL, logoutButtonRect.left, logoutButtonRect.top, logoutButtonRect.right - logoutButtonRect.left, logoutButtonRect.bottom - logoutButtonRect.top, SWP_NOZORDER);
     }
     else
     {
@@ -51,10 +82,10 @@ void Admin::Display(HWND hWnd) {
             L"BUTTON",                   // Predefined class; Unicode assumed
             L"Logout",                    // Button text
             WS_CHILD | WS_VISIBLE,       // Styles
-            buttonRect.left,             // x position
-            buttonRect.top,              // y position
-            buttonRect.right - buttonRect.left,    // Button width
-            buttonRect.bottom - buttonRect.top,    // Button height
+            logoutButtonRect.left,             // x position
+            logoutButtonRect.top,              // y position
+            logoutButtonRect.right - logoutButtonRect.left,    // Button width
+            logoutButtonRect.bottom - logoutButtonRect.top,    // Button height
             hWnd,                      // Parent window
             (HMENU)ID_BUTTON_LOGOUT,                        // No menu
             NULL,                        // Instance handle
@@ -97,5 +128,9 @@ void Admin::DestroyControls() {
     if (logoutButton != nullptr) {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;
+    }
+    if (dashboardButton != nullptr) {
+        DestroyWindow(dashboardButton);
+        dashboardButton = nullptr;
     }
 }
