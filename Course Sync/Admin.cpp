@@ -110,10 +110,11 @@ void Admin::Display(HWND hWnd) {
     HFONT hWelcomeFont = CreateFont(36, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
     SelectObject(hdc, hWelcomeFont);
-    DrawTextCenter(hdc, L"Dashboard", 20, width, height);
+    DrawTextCenter(hdc, L"Dashboard", 20, width + 150, height);
 
     // Cleanup
     DeleteObject(hWelcomeFont);
+    DeleteObject(hDarkBrush);
 
     EndPaint(hWnd, &ps);
 }
