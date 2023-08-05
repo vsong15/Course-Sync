@@ -1,6 +1,10 @@
 #include "Admin.h"
 #include <Winuser.h>
 #include "Constants.h"
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
+
+using namespace Gdiplus;
 
 HWND Admin::logoutButton = nullptr;
 
@@ -57,6 +61,19 @@ void Admin::Display(HWND hWnd) {
             NULL                         // Additional application data
         );
     }
+
+    // Calculate the center position for the logo
+    int logoWidth = 140; // Set the desired width of the logo
+    int logoHeight = 30; // Set the desired height of the logo
+    int logoLeftMargin = 4;
+    int logoTopMargin = 10;
+
+    // Load the image using GDI+
+    Image image(L"courseSyncLogo.bmp");
+
+    // Draw the logo
+    Graphics graphics(hdc);
+    graphics.DrawImage(&image, logoLeftMargin, logoTopMargin, logoWidth, logoHeight);
 
     // Draw the "Welcome to Course Sync" text
     HFONT hWelcomeFont = CreateFont(36, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
