@@ -180,6 +180,9 @@ void Admin::Display(HWND hWnd) {
     userManagementRect.top += textTopMargin;
     loginActivityRect.top += textTopMargin;
 
+    // Set the background color for the DrawText function to match the section's background
+    SetBkColor(hdc, RGB(230, 230, 230)); // Light gray section background
+
     DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
