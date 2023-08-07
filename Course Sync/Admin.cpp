@@ -154,14 +154,31 @@ void Admin::Display(HWND hWnd) {
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
     SelectObject(hdc, hSectionFont);
 
-    RECT userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height }; // 2/3 of the available width
-    RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height }; // 1/3 of the available width
+    // Draw rounded rectangles around the sections
+    HBRUSH hSectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the section background
+    SelectObject(hdc, hSectionBrush);
+
+    int cornerRadius = 10; // Adjust the corner radius as needed
+
+    int textTopMargin = 5; // Adjust the top margin for text as needed
+
+    // User Management section
+    RECT userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height };
+    RoundRect(hdc, userManagementRect.left, userManagementRect.top, userManagementRect.right, userManagementRect.bottom, cornerRadius, cornerRadius);
+
+    // Login Activity section
+    RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
+    RoundRect(hdc, loginActivityRect.left, loginActivityRect.top, loginActivityRect.right, loginActivityRect.bottom, cornerRadius, cornerRadius);
 
     // Check if the section titles would overlap with the navbar
     if (userManagementRect.left < minNavBarWidth) {
         OffsetRect(&userManagementRect, minNavBarWidth - userManagementRect.left, 0);
         OffsetRect(&loginActivityRect, minNavBarWidth - userManagementRect.left, 0);
     }
+
+    // Adjust the top coordinate of the RECT structures for text positioning
+    userManagementRect.top += textTopMargin;
+    loginActivityRect.top += textTopMargin;
 
     DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
@@ -170,6 +187,7 @@ void Admin::Display(HWND hWnd) {
     DeleteObject(hWelcomeFont);
     DeleteObject(hDarkBrush);
     DeleteObject(hSectionFont);
+    DeleteObject(hSectionBrush);
 
     EndPaint(hWnd, &ps);
 }
