@@ -137,15 +137,39 @@ void Admin::Display(HWND hWnd) {
     Graphics graphics(hdc);
     graphics.DrawImage(&image, logoLeftMargin, logoTopMargin, logoWidth, logoHeight);
 
-    // Draw the "Welcome to Course Sync" text
     HFONT hWelcomeFont = CreateFont(36, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
     SelectObject(hdc, hWelcomeFont);
-    DrawTextCenter(hdc, L"Dashboard", 20, width + 150, height);
+    DrawTextCenter(hdc, L"Dashboard", 5, width + 150, height);
+
+    // Calculate the section widths based on window width
+    int minNavBarWidth = 150; // Minimum width for the navbar
+    int availableWidth = width - minNavBarWidth;
+
+    int userManagementWidth = availableWidth * 2 / 3;
+    int loginActivityWidth = availableWidth - userManagementWidth;
+
+    // Draw the section headings
+    HFONT hSectionFont = CreateFont(24, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+    SelectObject(hdc, hSectionFont);
+
+    RECT userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height }; // 2/3 of the available width
+    RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height }; // 1/3 of the available width
+
+    // Check if the section titles would overlap with the navbar
+    if (userManagementRect.left < minNavBarWidth) {
+        OffsetRect(&userManagementRect, minNavBarWidth - userManagementRect.left, 0);
+        OffsetRect(&loginActivityRect, minNavBarWidth - userManagementRect.left, 0);
+    }
+
+    DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
+    DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
     // Cleanup
     DeleteObject(hWelcomeFont);
     DeleteObject(hDarkBrush);
+    DeleteObject(hSectionFont);
 
     EndPaint(hWnd, &ps);
 }
