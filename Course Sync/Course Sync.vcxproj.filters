@@ -24,21 +24,18 @@
     <ClInclude Include="Course Sync.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Admin.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="DatabaseHelper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DatabaseHelper.h">
+    <ClInclude Include="Admin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Course Sync.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Login.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Login.cpp">
@@ -49,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="DatabaseHelper.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Login.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
