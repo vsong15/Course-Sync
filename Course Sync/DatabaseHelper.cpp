@@ -275,3 +275,38 @@ std::vector<std::string> DatabaseHelper::GetLoginTimestamps(int user_id) {
 
     return login_timestamps;
 }
+
+std::wstring DatabaseHelper::GetFullNameFromUserID(int user_id) {
+    PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return L"";
+    }
+
+    PQsetClientEncoding(conn, "UTF8");
+
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT CONCAT(First_Name, ' ', Last_Name) AS Full_Name FROM users WHERE User_ID = %d", user_id);
+
+    PGresult* result = ExecuteQuery(conn, query);
+    if (!result) {
+        fprintf(stderr, "Failed to retrieve full name\n");
+        CloseDatabaseConnection(conn);
+        return L"";
+    }
+
+    std::wstring fullName = L"";
+    int rowCount = PQntuples(result);
+    if (rowCount > 0) {
+        const char* utf8FullName = PQgetvalue(result, 0, 0);
+        if (utf8FullName) {
+            std::string utf8Str = utf8FullName;
+            fullName = std::wstring(utf8Str.begin(), utf8Str.end());
+        }
+    }
+
+    PQclear(result);
+    CloseDatabaseConnection(conn);
+
+    return fullName;
+}

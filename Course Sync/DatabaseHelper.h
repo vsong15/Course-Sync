@@ -19,4 +19,5 @@ public:
     static int GetUserID(const wchar_t* username, const wchar_t* password);
     static void StoreLoginTimestamp(int user_id);
     static std::vector<std::string> GetLoginTimestamps(int user_id);
+    static std::wstring GetFullNameFromUserID(int user_id);
 };

@@ -189,7 +189,7 @@ void Admin::Display(HWND hWnd) {
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
     // Adjust font size based on screen dimensions
-    int fontSizeDivisor = (height > width) ? 45 : 35; // Adjust the divisor as needed
+    int fontSizeDivisor = (height > width) ? 55 : 45; // Adjust the divisor as needed
     int fontSize = height / fontSizeDivisor;
     HFONT hTimestampFont = CreateFont(fontSize, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
@@ -230,11 +230,14 @@ void Admin::Display(HWND hWnd) {
         // Get the month name from the array
         const wchar_t* monthName = monthNames[month - 1];
 
-        // Format the timestamp
-        wchar_t formattedTimestamp[100];
+        int user_id = Admin::GetCurrentUserId(); // Get the user's ID
+        std::wstring fullName = DatabaseHelper::GetFullNameFromUserID(user_id);
+
+        // Format the timestamp along with the user's full name
+        wchar_t formattedTimestamp[150]; // Adjust the buffer size as needed
         const wchar_t* amPm = (hour < 12) ? L"AM" : L"PM";
         hour = (hour % 12 == 0) ? 12 : hour % 12;
-        swprintf_s(formattedTimestamp, L"%s %d, %d %02d:%02d %s", monthName, day, year, hour, minute, amPm);
+        swprintf_s(formattedTimestamp, L"[%s %d, %d - %02d:%02d %s] User: %ls", monthName, day, year, hour, minute, amPm, fullName.c_str());
 
         // Draw the formatted timestamp with the adjusted text color and background color
         SetTextColor(hdc, RGB(53, 99, 158));
