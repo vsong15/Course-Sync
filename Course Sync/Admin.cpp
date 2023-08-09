@@ -217,31 +217,28 @@ void Admin::Display(HWND hWnd) {
         L"July", L"August", L"September", L"October", L"November", L"December"
     };
 
-    for (const std::string& timestamp : login_timestamps) {
-        // Convert narrow character string to wide character string
-        int wstrLen = MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, NULL, 0);
-        std::wstring wtimestamp(wstrLen, L'\0');
-        MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, &wtimestamp[0], wstrLen);
+    // Retrieve the user's full name outside the loop
+    std::wstring fullName = DatabaseHelper::GetFullNameFromUserID(user_id);
 
-        // Extract year, month, day, hour, minute, and seconds from the timestamp string (assuming a format like "YYYY-MM-DD HH:MM:SS")
+    for (const std::string& timestamp : login_timestamps) {
+        std::wstring wtimestamp;
+        wtimestamp.assign(timestamp.begin(), timestamp.end());
+
+        // Extract year, month, day, hour, minute, and seconds from the timestamp string
         int year, month, day, hour, minute, second;
         swscanf_s(wtimestamp.c_str(), L"%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
         // Get the month name from the array
         const wchar_t* monthName = monthNames[month - 1];
 
-        int user_id = Admin::GetCurrentUserId(); // Get the user's ID
-        std::wstring fullName = DatabaseHelper::GetFullNameFromUserID(user_id);
-
         // Format the timestamp along with the user's full name
-        wchar_t formattedTimestamp[150]; // Adjust the buffer size as needed
+        wchar_t formattedTimestamp[150];
         const wchar_t* amPm = (hour < 12) ? L"AM" : L"PM";
         hour = (hour % 12 == 0) ? 12 : hour % 12;
         swprintf_s(formattedTimestamp, L"[%s %d, %d - %02d:%02d %s] User: %ls", monthName, day, year, hour, minute, amPm, fullName.c_str());
 
-        // Draw the formatted timestamp with the adjusted text color and background color
+        // Draw the formatted timestamp
         SetTextColor(hdc, RGB(53, 99, 158));
-        SetBkColor(hdc, RGB(230, 230, 230)); // Subsection background color
         DrawTextW(hdc, formattedTimestamp, -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
 
         startY += lineHeight;
