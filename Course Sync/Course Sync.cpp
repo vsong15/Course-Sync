@@ -226,6 +226,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             if (!username.empty() && !password.empty()) {
                 if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
+                    // After successful user authentication
+                    int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());  
+                    DatabaseHelper::StoreLoginTimestamp(user_id);
+
                     // Get the role of the user
                     std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
                     std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());

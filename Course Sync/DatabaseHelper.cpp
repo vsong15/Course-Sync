@@ -197,15 +197,18 @@ std::string DatabaseHelper::GetLastName(const wchar_t* username, const wchar_t* 
     return lastName;
 }
 
-int DatabaseHelper::GetUserID(const std::string& username, const std::string& password) {
+int DatabaseHelper::GetUserID(const wchar_t* username, const wchar_t* password) {
     PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
     if (!conn) {
         fprintf(stderr, "Failed to connect to the database\n");
         return -1;  // Return a sentinel value to indicate an error
     }
 
+    std::string usernameUtf8 = WStringToString(username);
+    std::string passwordUtf8 = WStringToString(password);
+
     char query[256];
-    snprintf(query, sizeof(query), "SELECT User_ID FROM users WHERE Username='%s' AND Password='%s'", username.c_str(), password.c_str());
+    snprintf(query, sizeof(query), "SELECT User_ID FROM users WHERE Username='%s' AND Password='%s'", usernameUtf8.c_str(), passwordUtf8.c_str());
 
     PGresult* result = ExecuteQuery(conn, query);
     if (!result) {

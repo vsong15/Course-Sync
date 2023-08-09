@@ -16,7 +16,7 @@ public:
     static std::string GetRole(const wchar_t* username, const wchar_t* password);
     static std::string GetFirstName(const wchar_t* username, const wchar_t* password);
     static std::string GetLastName(const wchar_t* username, const wchar_t* password);
-    static int GetUserID(const std::string& username, const std::string& password);
+    static int GetUserID(const wchar_t* username, const wchar_t* password);
     static void StoreLoginTimestamp(int user_id);
     static std::vector<std::string> GetLoginTimestamps(int user_id);
 };
