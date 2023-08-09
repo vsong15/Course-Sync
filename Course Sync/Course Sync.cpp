@@ -236,6 +236,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
 
                     if (role == "administrator") {
+                        Admin::SetCurrentUserId(user_id);
+
                         // Only display the home window if the role is "administrator"
                         Login login;
                         Login::DestroyControls();

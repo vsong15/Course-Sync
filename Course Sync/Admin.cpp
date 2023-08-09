@@ -3,12 +3,14 @@
 #include "Constants.h"
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
+#include "DatabaseHelper.h"
 
 using namespace Gdiplus;
 
 HWND Admin::logoutButton = nullptr;
 HWND Admin::dashboardButton = nullptr;
 HWND Admin::addUserButton = nullptr;
+int Admin::currentUserId = 0;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -186,11 +188,50 @@ void Admin::Display(HWND hWnd) {
     DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
+    // Adjust font size based on screen height
+    int fontSize = height / 35; // Adjust the divisor as needed
+    HFONT hTimestampFont = CreateFont(fontSize, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+    SelectObject(hdc, hTimestampFont);
+
+    // Retrieve login timestamps using the DatabaseHelper function
+    int user_id = Admin::GetCurrentUserId();
+    std::vector<std::string> login_timestamps = DatabaseHelper::GetLoginTimestamps(user_id);
+
+    // Display the login timestamps
+    int startY = loginActivityRect.top + textTopMargin + 40; // Adjust the startY position as needed
+    int lineHeight = fontSize + 5;
+
+    HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
+    SelectObject(hdc, hSubsectionBrush);
+
+    // Create a RECT for login timestamps
+    RECT loginTimestampsRect = loginActivityRect;
+    loginTimestampsRect.top = startY;
+    loginTimestampsRect.left += 5; 
+
+    for (const std::string& timestamp : login_timestamps) {
+        // Convert narrow character string to wide character string
+        int wstrLen = MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, NULL, 0);
+        std::wstring wtimestamp(wstrLen, L'\0');
+        MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, &wtimestamp[0], wstrLen);
+
+        // Draw the wide character string with the adjusted text color and background color
+        SetTextColor(hdc, RGB(53, 99, 158));
+        SetBkColor(hdc, RGB(230, 230, 230)); // Subsection background color
+        DrawTextW(hdc, wtimestamp.c_str(), -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
+
+        startY += lineHeight;
+        loginTimestampsRect.top += lineHeight; // Move to the next line
+    }
+
     // Cleanup
     DeleteObject(hWelcomeFont);
     DeleteObject(hDarkBrush);
     DeleteObject(hSectionFont);
     DeleteObject(hSectionBrush);
+    DeleteObject(hTimestampFont);
+    DeleteObject(hSubsectionBrush);
 
     EndPaint(hWnd, &ps);
 }
