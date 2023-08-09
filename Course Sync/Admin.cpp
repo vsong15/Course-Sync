@@ -188,8 +188,9 @@ void Admin::Display(HWND hWnd) {
     DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
-    // Adjust font size based on screen height
-    int fontSize = height / 35; // Adjust the divisor as needed
+    // Adjust font size based on screen dimensions
+    int fontSizeDivisor = (height > width) ? 45 : 35; // Adjust the divisor as needed
+    int fontSize = height / fontSizeDivisor;
     HFONT hTimestampFont = CreateFont(fontSize, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
     SelectObject(hdc, hTimestampFont);
