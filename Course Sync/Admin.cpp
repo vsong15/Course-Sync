@@ -210,16 +210,35 @@ void Admin::Display(HWND hWnd) {
     loginTimestampsRect.top = startY;
     loginTimestampsRect.left += 5; 
 
+    // Array to map month numbers to their names
+    const wchar_t* monthNames[] = {
+        L"January", L"February", L"March", L"April", L"May", L"June",
+        L"July", L"August", L"September", L"October", L"November", L"December"
+    };
+
     for (const std::string& timestamp : login_timestamps) {
         // Convert narrow character string to wide character string
         int wstrLen = MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, NULL, 0);
         std::wstring wtimestamp(wstrLen, L'\0');
         MultiByteToWideChar(CP_UTF8, 0, timestamp.c_str(), -1, &wtimestamp[0], wstrLen);
 
-        // Draw the wide character string with the adjusted text color and background color
+        // Extract year, month, day, hour, minute, and seconds from the timestamp string (assuming a format like "YYYY-MM-DD HH:MM:SS")
+        int year, month, day, hour, minute, second;
+        swscanf_s(wtimestamp.c_str(), L"%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+        // Get the month name from the array
+        const wchar_t* monthName = monthNames[month - 1];
+
+        // Format the timestamp
+        wchar_t formattedTimestamp[100];
+        const wchar_t* amPm = (hour < 12) ? L"AM" : L"PM";
+        hour = (hour % 12 == 0) ? 12 : hour % 12;
+        swprintf_s(formattedTimestamp, L"%s %d, %d %02d:%02d %s", monthName, day, year, hour, minute, amPm);
+
+        // Draw the formatted timestamp with the adjusted text color and background color
         SetTextColor(hdc, RGB(53, 99, 158));
         SetBkColor(hdc, RGB(230, 230, 230)); // Subsection background color
-        DrawTextW(hdc, wtimestamp.c_str(), -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
+        DrawTextW(hdc, formattedTimestamp, -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
 
         startY += lineHeight;
         loginTimestampsRect.top += lineHeight; // Move to the next line
