@@ -200,7 +200,7 @@ void Admin::Display(HWND hWnd) {
     std::vector<std::string> login_timestamps = DatabaseHelper::GetLoginTimestamps(user_id);
 
     // Display the login timestamps
-    int startY = loginActivityRect.top + textTopMargin + 40; // Adjust the startY position as needed
+    int startY = loginActivityRect.top + textTopMargin + 30; // Adjust the startY position as needed
     int lineHeight = fontSize + 5;
 
     HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
@@ -221,6 +221,10 @@ void Admin::Display(HWND hWnd) {
     std::wstring fullName = DatabaseHelper::GetFullNameFromUserID(user_id);
 
     for (const std::string& timestamp : login_timestamps) {
+        if (loginTimestampsRect.top + lineHeight > height - textTopMargin) {
+            break;
+        }
+
         std::wstring wtimestamp;
         wtimestamp.assign(timestamp.begin(), timestamp.end());
 
