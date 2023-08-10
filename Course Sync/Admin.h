@@ -13,6 +13,10 @@ public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
 	static void DestroyControls();
+	static int userManagementScrollPos;
+	static int loginActivityScrollPos;
+	static HWND userManagementScrollBar;
+	static HWND loginActivityScrollBar;
 
 	static void SetCurrentUserId(int userId) {
 		currentUserId = userId;

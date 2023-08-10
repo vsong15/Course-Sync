@@ -176,7 +176,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         return 0;
     }
-
     case WM_SIZE:
     {
         Login login;
@@ -279,7 +278,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
-    break;
+    case WM_VSCROLL:
+    {
+        int nScrollCode = LOWORD(wParam);
+        int nPos = HIWORD(wParam);
+
+        if (lParam == (LPARAM)Admin::userManagementScrollBar) {
+            // Handle user management scroll bar
+            int scrollAmount = 10; // Adjust the scroll amount as needed
+
+            switch (nScrollCode)
+            {
+            case SB_LINEUP:
+                Admin::userManagementScrollPos -= scrollAmount;
+                break;
+            case SB_LINEDOWN:
+                Admin::userManagementScrollPos += scrollAmount;
+                break;
+                // Handle other scroll bar codes as needed
+            }
+
+            // Calculate the invalidated region for repainting
+            RECT updateRect;
+            GetClientRect(hWnd, &updateRect);
+            updateRect.top += 50; // Adjust the top offset based on your layout
+
+            // Invalidate only the region that needs repainting due to scrolling
+            InvalidateRect(hWnd, &updateRect, FALSE);
+        }
+        else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
+            // Handle login activity scroll bar
+            int scrollAmount = 10; // Adjust the scroll amount as needed
+
+            switch (nScrollCode)
+            {
+            case SB_LINEUP:
+                Admin::loginActivityScrollPos -= scrollAmount;
+                break;
+            case SB_LINEDOWN:
+                Admin::loginActivityScrollPos += scrollAmount;
+                break;
+                // Handle other scroll bar codes as needed
+            }
+
+            // Calculate the invalidated region for repainting
+            RECT updateRect;
+            GetClientRect(hWnd, &updateRect);
+            updateRect.top += 50; // Adjust the top offset based on your layout
+
+            // Invalidate only the region that needs repainting due to scrolling
+            InvalidateRect(hWnd, &updateRect, FALSE);
+        }
+        break;
+    }
     case WM_PAINT:
         if (activeWindow == 0) {
             Login::Display(hWnd);

@@ -11,6 +11,10 @@ HWND Admin::logoutButton = nullptr;
 HWND Admin::dashboardButton = nullptr;
 HWND Admin::addUserButton = nullptr;
 int Admin::currentUserId = 0;
+int Admin::userManagementScrollPos = 0;
+int Admin::loginActivityScrollPos = 0;
+HWND Admin::userManagementScrollBar = nullptr;
+HWND Admin::loginActivityScrollBar = nullptr;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -188,6 +192,23 @@ void Admin::Display(HWND hWnd) {
     DrawText(hdc, L"User Management Activity", -1, &userManagementRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
     DrawText(hdc, L"Login Activity", -1, &loginActivityRect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 
+    if (userManagementScrollBar != NULL) {
+        SetWindowPos(userManagementScrollBar, NULL, userManagementRect.right - 20, userManagementRect.top, 20, userManagementRect.bottom - userManagementRect.top, SWP_NOZORDER);
+    }
+    else {
+        // Add vertical scroll bars to manage scrolling for the sections
+        userManagementScrollBar = CreateWindowW(L"SCROLLBAR", NULL, WS_CHILD | WS_VISIBLE | SBS_VERT,
+            userManagementRect.right - 20, userManagementRect.top, 20, userManagementRect.bottom - userManagementRect.top, hWnd, NULL, NULL, NULL);
+    }
+   
+    if (loginActivityScrollBar != NULL) {
+        SetWindowPos(loginActivityScrollBar, NULL, loginActivityRect.right - 20, loginActivityRect.top, 20, loginActivityRect.bottom - loginActivityRect.top, SWP_NOZORDER);
+    }
+    else {
+        loginActivityScrollBar = CreateWindowW(L"SCROLLBAR", NULL, WS_CHILD | WS_VISIBLE | SBS_VERT,
+            loginActivityRect.right - 20, loginActivityRect.top, 20, loginActivityRect.bottom - loginActivityRect.top, hWnd, NULL, NULL, NULL);
+    }
+
     // Adjust font size based on screen width
     int fontSizeDivisor = 80; // Adjust the divisor as needed
     int fontSize = width / fontSizeDivisor;
@@ -200,7 +221,7 @@ void Admin::Display(HWND hWnd) {
     std::vector<std::string> login_timestamps = DatabaseHelper::GetLoginTimestamps(user_id);
 
     // Display the login timestamps
-    int startY = loginActivityRect.top + textTopMargin + 30; // Adjust the startY position as needed
+    int startY = loginActivityRect.top + textTopMargin + 30 - loginActivityScrollPos; // Adjusted startY
     int lineHeight = fontSize + 5;
 
     HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
@@ -209,7 +230,7 @@ void Admin::Display(HWND hWnd) {
     // Create a RECT for login timestamps
     RECT loginTimestampsRect = loginActivityRect;
     loginTimestampsRect.top = startY;
-    loginTimestampsRect.left += 5; 
+    loginTimestampsRect.left += 5;
 
     // Array to map month numbers to their names
     const wchar_t* monthNames[] = {
@@ -267,6 +288,10 @@ void Admin::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int heigh
 }
 
 void Admin::DestroyControls() {
+    // Reset scroll positions
+    userManagementScrollPos = 0;
+    loginActivityScrollPos = 0;
+
     if (logoutButton != nullptr) {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;
