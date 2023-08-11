@@ -285,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         if (lParam == (LPARAM)Admin::userManagementScrollBar) {
             // Handle user management scroll bar
-            int scrollAmount = 10; // Adjust the scroll amount as needed
+            int scrollAmount = 100; // Adjust the scroll amount as needed
 
             switch (nScrollCode)
             {
@@ -301,14 +301,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Calculate the invalidated region for repainting
             RECT updateRect;
             GetClientRect(hWnd, &updateRect);
-            updateRect.top += 50; // Adjust the top offset based on your layout
+            updateRect.top = 110; // Adjust the top offset based on your layout
 
             // Invalidate only the region that needs repainting due to scrolling
             InvalidateRect(hWnd, &updateRect, FALSE);
         }
         else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
             // Handle login activity scroll bar
-            int scrollAmount = 10; // Adjust the scroll amount as needed
+            int scrollAmount = 30; // Adjust the scroll amount as needed
 
             switch (nScrollCode)
             {
@@ -318,7 +318,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case SB_LINEDOWN:
                 Admin::loginActivityScrollPos += scrollAmount;
                 break;
-                // Handle other scroll bar codes as needed
             }
 
             // Calculate the invalidated region for repainting

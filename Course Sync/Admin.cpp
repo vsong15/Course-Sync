@@ -221,8 +221,8 @@ void Admin::Display(HWND hWnd) {
     std::vector<std::string> login_timestamps = DatabaseHelper::GetLoginTimestamps(user_id);
 
     // Display the login timestamps
-    int startY = loginActivityRect.top + textTopMargin + 30 - loginActivityScrollPos; // Adjusted startY
-    int lineHeight = fontSize + 5;
+    int startY = loginActivityRect.top + textTopMargin + 40 - loginActivityScrollPos; // Adjusted startY
+    int lineHeight = fontSize;
 
     HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
     SelectObject(hdc, hSubsectionBrush);
@@ -241,9 +241,19 @@ void Admin::Display(HWND hWnd) {
     // Retrieve the user's full name outside the loop
     std::wstring fullName = DatabaseHelper::GetFullNameFromUserID(user_id);
 
+    // Calculate the Y position of the "Login Activity" section title
+    int loginActivityTitleY = loginActivityRect.top + textTopMargin + 20;
+
     for (const std::string& timestamp : login_timestamps) {
         if (loginTimestampsRect.top + lineHeight > height - textTopMargin) {
             break;
+        }
+
+        // Check if the timestamp is too high and overlaps with the title
+        if (loginTimestampsRect.top < loginActivityTitleY) {
+            // Skip displaying this timestamp as it's too high
+            loginTimestampsRect.top += lineHeight; // Move to the next line
+            continue;
         }
 
         std::wstring wtimestamp;
@@ -262,9 +272,12 @@ void Admin::Display(HWND hWnd) {
         hour = (hour % 12 == 0) ? 12 : hour % 12;
         swprintf_s(formattedTimestamp, L"[%s %d, %d - %02d:%02d %s] User: %ls", monthName, day, year, hour, minute, amPm, fullName.c_str());
 
-        // Draw the formatted timestamp
-        SetTextColor(hdc, RGB(53, 99, 158));
-        DrawTextW(hdc, formattedTimestamp, -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
+        // Check if the timestamp should be displayed below the "Login Activity" section title
+        if (loginTimestampsRect.top >= loginActivityRect.top + textTopMargin + 10) {
+            // Draw the formatted timestamp
+            SetTextColor(hdc, RGB(53, 99, 158));
+            DrawTextW(hdc, formattedTimestamp, -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
+        }
 
         startY += lineHeight;
         loginTimestampsRect.top += lineHeight; // Move to the next line
