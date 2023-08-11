@@ -323,13 +323,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Calculate the invalidated region for repainting
             RECT updateRect;
             GetClientRect(hWnd, &updateRect);
-            updateRect.top += 50; // Adjust the top offset based on your layout
+            updateRect.top = 80; // Adjust the top offset based on your layout
+
+            // Calculate the dimensions of the window
+            int width = updateRect.right - updateRect.left;
+            int height = updateRect.bottom - updateRect.top;
+
+            int minNavBarWidth = 150; // Minimum width for the navbar
+            int availableWidth = width - minNavBarWidth;
+
+            int userManagementWidth = availableWidth * 2 / 3;
+
+            // Calculate dimensions for the "Login Activity" section
+            RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
+
+            // Set updateRect dimensions to match the "Login Activity" section
+            updateRect.left = loginActivityRect.left;
+            updateRect.right = loginActivityRect.right;
 
             // Invalidate only the region that needs repainting due to scrolling
             InvalidateRect(hWnd, &updateRect, FALSE);
         }
         break;
     }
+    case WM_ERASEBKGND:
+        return true;
     case WM_PAINT:
         if (activeWindow == 0) {
             Login::Display(hWnd);

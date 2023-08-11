@@ -224,6 +224,9 @@ void Admin::Display(HWND hWnd) {
     int startY = loginActivityRect.top + textTopMargin + 40 - loginActivityScrollPos; // Adjusted startY
     int lineHeight = fontSize;
 
+    // Store the initial startY value
+    int initialStartY = startY;
+
     HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
     SelectObject(hdc, hSubsectionBrush);
 
@@ -279,9 +282,22 @@ void Admin::Display(HWND hWnd) {
             DrawTextW(hdc, formattedTimestamp, -1, &loginTimestampsRect, DT_SINGLELINE | DT_LEFT | DT_CENTER | DT_TOP);
         }
 
+        // Restore the initial startY value for consistent positioning
+        startY = initialStartY;
+
         startY += lineHeight;
         loginTimestampsRect.top += lineHeight; // Move to the next line
     }
+
+    // Customize the scrollbar appearance
+    SCROLLINFO scrollInfo;
+    scrollInfo.cbSize = sizeof(SCROLLINFO);
+    scrollInfo.fMask = SIF_ALL;
+    scrollInfo.nMin = 0;
+    scrollInfo.nMax = 100; // Set the total content height
+    scrollInfo.nPage = height; // Set the height of the visible area
+    scrollInfo.nPos = Admin::loginActivityScrollPos;
+    SetScrollInfo(loginActivityScrollBar, SB_CTL, &scrollInfo, TRUE);
 
     // Cleanup
     DeleteObject(hWelcomeFont);
