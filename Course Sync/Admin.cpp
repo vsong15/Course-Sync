@@ -363,3 +363,14 @@ void Admin::DestroyControls() {
         loginActivityScrollBar = nullptr;
     }
 }
+
+void Admin::DestroyScrollBars() {
+    if (userManagementScrollBar != nullptr) {
+        DestroyWindow(userManagementScrollBar);
+        userManagementScrollBar = nullptr;
+    }
+    if (loginActivityScrollBar != nullptr) {
+        DestroyWindow(loginActivityScrollBar);
+        loginActivityScrollBar = nullptr;
+    }
+}

@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddUser.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Course Sync.h" />
     <ClInclude Include="DatabaseHelper.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddUser.cpp" />
     <ClCompile Include="Course Sync.cpp" />
     <ClCompile Include="DatabaseHelper.cpp" />
     <ClCompile Include="Admin.cpp" />

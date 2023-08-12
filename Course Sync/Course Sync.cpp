@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
+#include "AddUser.h"
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -221,61 +222,74 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int wmId = LOWORD(wParam);
     switch (wmId)
     {
-    case ID_BUTTON_LOGOUT:
-        if (activeWindow == 1) {
-            Admin::DestroyControls();
-        }
-        activeWindow = 0;
-        InvalidateRect(hWnd, NULL, TRUE);
-        Login login;
-        login.Display(hWnd);
-        MessageBox(hWnd, L"Logged out successfully.", L"Logout", MB_OK | MB_ICONINFORMATION);
-        break;
-    case ID_BUTTON_LOGIN:
-    {
-        std::wstring username = Login::GetUsername();
-        std::wstring password = Login::GetPassword();
-
-        if (username.empty() || password.empty()) {
-            Login::DisplayError(hWnd, L"Please enter both username and password.");
-            break;
-        }
-
-        if (!DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
-            Login::DisplayError(hWnd, L"Wrong username or password.");
-            break;
-        }
-
-        int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());
-        DatabaseHelper::StoreLoginTimestamp(user_id);
-        std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
-
-        if (role == "administrator") {
-            std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
-            std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
-
-            Admin::SetCurrentUserId(user_id);
-            Login::DestroyControls();
-            activeWindow = 1;
+        case ID_BUTTON_LOGOUT:
+        {
+            if (activeWindow == 1 || activeWindow == 2) {
+                Admin::DestroyControls();
+            }
+            activeWindow = 0;
             InvalidateRect(hWnd, NULL, TRUE);
-
-            Admin admin;
-            admin.Display(hWnd);
-
-            std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
-            MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
+            Login login;
+            login.Display(hWnd);
+            MessageBox(hWnd, L"Logged out successfully.", L"Logout", MB_OK | MB_ICONINFORMATION);
+            break;
         }
-        else {
-            Login::DisplayError(hWnd, L"Only administrators can log in.");
+        case ID_BUTTON_LOGIN:
+        {
+            std::wstring username = Login::GetUsername();
+            std::wstring password = Login::GetPassword();
+
+            if (username.empty() || password.empty()) {
+                Login::DisplayError(hWnd, L"Please enter both username and password.");
+                break;
+            }
+
+            if (!DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
+                Login::DisplayError(hWnd, L"Wrong username or password.");
+                break;
+            }
+
+            int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());
+            DatabaseHelper::StoreLoginTimestamp(user_id);
+            std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
+
+            if (role == "administrator") {
+                std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
+                std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
+
+                Admin::SetCurrentUserId(user_id);
+                Login::DestroyControls();
+                activeWindow = 1;
+                InvalidateRect(hWnd, NULL, TRUE);
+
+                Admin admin;
+                admin.Display(hWnd);
+
+                std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
+                MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
+            }
+            else {
+                Login::DisplayError(hWnd, L"Only administrators can log in.");
+            }
+            break;
         }
-        break;
-    }
-    case IDM_ABOUT:
-        DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-        break;
-    case IDM_EXIT:
-        DestroyWindow(hWnd);
-        break;
+        case ID_BUTTON_ADD_USER:
+        { 
+            if (activeWindow == 1) {
+                Admin::DestroyScrollBars();
+            }
+            activeWindow = 2;
+            InvalidateRect(hWnd, NULL, TRUE);
+            AddUser::Display(hWnd);
+            break;
+    
+        }
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
     }
 }
 
