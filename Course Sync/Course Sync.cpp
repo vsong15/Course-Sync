@@ -236,39 +236,37 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         std::wstring username = Login::GetUsername();
         std::wstring password = Login::GetPassword();
 
-        if (!username.empty() && !password.empty()) {
-            if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
-                int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());
-                DatabaseHelper::StoreLoginTimestamp(user_id);
+        if (username.empty() || password.empty()) {
+            Login::DisplayError(hWnd, L"Please enter both username and password.");
+            break;
+        }
 
-                std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
-                std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
-                std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
+        if (!DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
+            Login::DisplayError(hWnd, L"Wrong username or password.");
+            break;
+        }
 
-                if (role == "administrator") {
-                    Admin::SetCurrentUserId(user_id);
+        int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());
+        DatabaseHelper::StoreLoginTimestamp(user_id);
+        std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
 
-                    Login login;
-                    Login::DestroyControls();
+        if (role == "administrator") {
+            std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
+            std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
 
-                    Admin admin;
-                    activeWindow = 1;
-                    InvalidateRect(hWnd, NULL, TRUE);
-                    admin.Display(hWnd);
+            Admin::SetCurrentUserId(user_id);
+            Login::DestroyControls();
+            activeWindow = 1;
+            InvalidateRect(hWnd, NULL, TRUE);
 
-                    std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
-                    MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
-                }
-                else {
-                    Login::DisplayError(hWnd, L"Only administrators can log in.");
-                }
-            }
-            else {
-                Login::DisplayError(hWnd, L"Wrong username or password.");
-            }
+            Admin admin;
+            admin.Display(hWnd);
+
+            std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
+            MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
         }
         else {
-            Login::DisplayError(hWnd, L"Please enter both username and password.");
+            Login::DisplayError(hWnd, L"Only administrators can log in.");
         }
         break;
     }
