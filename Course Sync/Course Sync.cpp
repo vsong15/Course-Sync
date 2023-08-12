@@ -310,6 +310,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             InvalidateRect(hWnd, &updateRect, FALSE);
         }
         else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
+            EnableWindow(Admin::loginActivityScrollBar, FALSE);
+
             // Handle login activity scroll bar
             int scrollAmount = 800; // Adjust the scroll amount as needed
 
