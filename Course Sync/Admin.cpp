@@ -353,4 +353,12 @@ void Admin::DestroyControls() {
         DestroyWindow(addUserButton);
         addUserButton = nullptr;
     }
+    if (userManagementScrollBar != nullptr) {
+        DestroyWindow(userManagementScrollBar);
+        userManagementScrollBar = nullptr;
+    }
+    if (loginActivityScrollBar != nullptr) {
+        DestroyWindow(loginActivityScrollBar);
+        loginActivityScrollBar = nullptr;
+    }
 }
