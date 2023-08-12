@@ -283,8 +283,20 @@ void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam){
     int nScrollCode = LOWORD(wParam);
     int nPos = HIWORD(wParam);
 
+    RECT updateRect;
+    GetClientRect(hWnd, &updateRect);
+    updateRect.top = 80;
+
+    int width = updateRect.right - updateRect.left;
+    int height = updateRect.bottom - updateRect.top;
+
+    int minNavBarWidth = 150;
+    int availableWidth = width - minNavBarWidth;
+    int userManagementWidth = availableWidth * 2 / 3;
+
     if (lParam == (LPARAM)Admin::userManagementScrollBar) {
-        int scrollAmount = 100; 
+        EnableWindow(Admin::userManagementScrollBar, FALSE);
+        int scrollAmount = 800; 
         switch (nScrollCode)
         {
         case SB_LINEUP:
@@ -299,7 +311,12 @@ void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam){
         }
         RECT updateRect;
         GetClientRect(hWnd, &updateRect);
-        updateRect.top = 110;
+        updateRect.top = 80;
+
+        RECT userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height };
+        updateRect.left = userManagementRect.left;
+        updateRect.right = userManagementRect.right - 20;
+
         InvalidateRect(hWnd, &updateRect, FALSE);
     }
     else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
@@ -318,17 +335,6 @@ void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam){
             Admin::loginActivityScrollPos = nPos;
             break;
         }
-
-        RECT updateRect;
-        GetClientRect(hWnd, &updateRect);
-        updateRect.top = 80;
-
-        int width = updateRect.right - updateRect.left;
-        int height = updateRect.bottom - updateRect.top;
-
-        int minNavBarWidth = 150;
-        int availableWidth = width - minNavBarWidth;
-        int userManagementWidth = availableWidth * 2 / 3;
 
         RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
         updateRect.left = loginActivityRect.left;

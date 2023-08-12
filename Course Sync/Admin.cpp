@@ -17,6 +17,7 @@ HWND Admin::userManagementScrollBar = nullptr;
 HWND Admin::loginActivityScrollBar = nullptr;
 int Admin::totalContentHeight = 0;
 RECT Admin::loginActivityRect;
+RECT Admin::userManagementRect;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -171,7 +172,7 @@ void Admin::Display(HWND hWnd) {
     int textTopMargin = 5; // Adjust the top margin for text as needed
 
     // User Management section
-    RECT userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height };
+    userManagementRect = { minNavBarWidth, 50, minNavBarWidth + userManagementWidth, height };
     RoundRect(hdc, userManagementRect.left, userManagementRect.top, userManagementRect.right, userManagementRect.bottom, cornerRadius, cornerRadius);
 
     // Login Activity section
