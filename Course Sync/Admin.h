@@ -21,6 +21,7 @@ public:
 	static int totalContentHeight;
 	static RECT loginActivityRect;
 	static RECT userManagementRect;
+	static RECT navBarRect;
 
 	static void SetCurrentUserId(int userId) {
 		currentUserId = userId;

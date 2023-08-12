@@ -277,7 +277,18 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         {
             if (activeWindow == 2) {
                 activeWindow = 1;
-                InvalidateRect(hWnd, NULL, TRUE);
+                RECT contentRect;
+
+                RECT rect;
+                GetClientRect(hWnd, &rect);
+                int width = rect.right - rect.left;
+                int height = rect.bottom - rect.top;
+
+                contentRect.left = 150;
+                contentRect.top = 0;
+                contentRect.right = width;
+                contentRect.bottom = height;
+                InvalidateRect(hWnd, &contentRect, TRUE);
                 Admin::Display(hWnd);
             }
             break;

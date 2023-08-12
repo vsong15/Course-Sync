@@ -18,6 +18,7 @@ HWND Admin::loginActivityScrollBar = nullptr;
 int Admin::totalContentHeight = 0;
 RECT Admin::loginActivityRect;
 RECT Admin::userManagementRect;
+RECT Admin::navBarRect;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -40,7 +41,7 @@ void Admin::Display(HWND hWnd) {
     int height = rect.bottom - rect.top;
 
     HBRUSH hDarkBrush = CreateSolidBrush(RGB(12, 42, 51)); 
-    RECT navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
+    navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
     FillRect(hdc, &navBarRect, hDarkBrush);
 
     RECT dashboardButtonRect;
