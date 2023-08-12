@@ -142,260 +142,235 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - post a quit message and return
 //
 //
+static int activeWindow = 0;
+static bool gdiPlusInitialized = false;
+void InitializeGdiPlus();
+void SetMinimumWindowSize(HWND hWnd, LPARAM lParam);
+void ShowLoginErrorLabel(HWND hWnd, LPARAM lParam);
+void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam);
+void ChangeActiveWindow(HWND hWnd);
+void CleanUpGdiPlus();
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    static int activeWindow = 0;
-    static bool gdiPlusInitialized = false;
-
     switch (message)
     {
     case WM_CREATE:
-    {
-        // Initialize GDI+ only once during the creation of the window
-        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-        Gdiplus::GdiplusStartup(&g_GdiplusToken, &gdiplusStartupInput, NULL);
+        InitializeGdiPlus();
         gdiPlusInitialized = true;
         return 0;
-    }
     case WM_GETMINMAXINFO:
-    {
-        // Get the system's DPI scaling
-        HDC hdc = GetDC(hWnd);
-        int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-        int dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
-        ReleaseDC(hWnd, hdc);
-
-        // Calculate the minimum window size based on the DPI scaling
-        int minWidth = MulDiv(800, dpiX, 96); // Set the desired minimum width (800) and adjust based on DPI scaling
-        int minHeight = MulDiv(600, dpiY, 96); // Set the desired minimum height (600) and adjust based on DPI scaling
-
-        // Set the minimum window size
-        MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
-        pMinMaxInfo->ptMinTrackSize.x = minWidth;
-        pMinMaxInfo->ptMinTrackSize.y = minHeight;
-
+        SetMinimumWindowSize(hWnd, lParam);
         return 0;
-    }
     case WM_SIZE:
-    {
-        Login login;
-        // Window size changed, reposition the error label
-        if (login.errorLabel != nullptr)
-        {
-            int errorLabelWidth = 300; // Set the desired width of the error label
-            int screenWidth = LOWORD(lParam); // Get the new window width
-
-            // Calculate the left margin for centering the error label
-            int leftMargin = (screenWidth - errorLabelWidth) / 2;
-
-            // Update the error label position
-            SetWindowPos(login.errorLabel, NULL, leftMargin, 150, errorLabelWidth, 25, SWP_NOZORDER);
-        }
+        ShowLoginErrorLabel(hWnd, lParam);
         return 0;
-    }
     case WM_COMMAND:
-    {
-        int wmId = LOWORD(wParam);
-        // Parse the menu selections:
-        switch (wmId)
-        {
-        case ID_BUTTON_LOGOUT:
-            // Destroy controls in the active window
-            if (activeWindow == 1) {
-                Admin::DestroyControls();
-            }
-
-            // Clear the active window
-            activeWindow = 0;          
-
-            // Redraw the window content
-            InvalidateRect(hWnd, NULL, TRUE);
-
-            // Display the login window again
-            Login login;
-            login.Display(hWnd);
-
-            // Show a message indicating successful logout
-            MessageBox(hWnd, L"Logged out successfully.", L"Logout", MB_OK | MB_ICONINFORMATION);
-            break;
-        case ID_BUTTON_LOGIN:
-        {
-            std::wstring username = Login::GetUsername();
-            std::wstring password = Login::GetPassword();
-
-            if (!username.empty() && !password.empty()) {
-                if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
-                    // After successful user authentication
-                    int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());  
-                    DatabaseHelper::StoreLoginTimestamp(user_id);
-
-                    // Get the role of the user
-                    std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
-                    std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
-                    std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
-
-                    if (role == "administrator") {
-                        Admin::SetCurrentUserId(user_id);
-
-                        // Only display the home window if the role is "administrator"
-                        Login login;
-                        Login::DestroyControls();
-
-                        Admin admin;
-                        activeWindow = 1;
-                        InvalidateRect(hWnd, NULL, TRUE);
-                        admin.Display(hWnd);
-
-                        // Construct the welcome message
-                        std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
-
-                        // Show the welcome message
-                        MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
-                    }
-                    else {
-                        // User is not an administrator, display an error message
-                        Login::DisplayError(hWnd, L"Only administrators can log in.");
-                    }
-                }
-                else {
-                    // Incorrect username or password
-                    Login::DisplayError(hWnd, L"Wrong username or password.");
-                }
-            }
-            else {
-                // Empty username or password field
-                Login::DisplayError(hWnd, L"Please enter both username and password.");
-            }
-            break;
-        }
-        case IDM_ABOUT:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
-        case IDM_EXIT:
-            DestroyWindow(hWnd);
-            break;
-        default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
-        }
-    }
+        ButtonClicked(hWnd, message, wParam, lParam);
+        return 0;
     case WM_VSCROLL:
-    {
-        int nScrollCode = LOWORD(wParam);
-        int nPos = HIWORD(wParam);
-
-        if (lParam == (LPARAM)Admin::userManagementScrollBar) {
-            // Handle user management scroll bar
-            int scrollAmount = 100; // Adjust the scroll amount as needed
-
-            switch (nScrollCode)
-            {
-            case SB_LINEUP:
-                Admin::userManagementScrollPos -= scrollAmount;
-                break;
-            case SB_LINEDOWN:
-                Admin::userManagementScrollPos += scrollAmount;
-                break;
-                // Handle other scroll bar codes as needed
-            case SB_THUMBPOSITION:
-                Admin::loginActivityScrollPos = nPos;
-                break;
-            }
-
-            // Calculate the invalidated region for repainting
-            RECT updateRect;
-            GetClientRect(hWnd, &updateRect);
-            updateRect.top = 110; // Adjust the top offset based on your layout
-
-            // Invalidate only the region that needs repainting due to scrolling
-            InvalidateRect(hWnd, &updateRect, FALSE);
-        }
-        else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
-            EnableWindow(Admin::loginActivityScrollBar, FALSE);
-
-            // Handle login activity scroll bar
-            int scrollAmount = 800; // Adjust the scroll amount as needed
-
-            switch (nScrollCode)
-            {
-            case SB_LINEUP:
-                Admin::loginActivityScrollPos -= scrollAmount;
-                break;
-            case SB_LINEDOWN:
-                Admin::loginActivityScrollPos += scrollAmount;
-                break;
-            case SB_THUMBPOSITION:
-                Admin::loginActivityScrollPos = nPos; // Set the scroll position based on the thumb position
-                break;
-            }
-
-            // Calculate the invalidated region for repainting
-            RECT updateRect;
-            GetClientRect(hWnd, &updateRect);
-            updateRect.top = 80; // Adjust the top offset based on your layout
-
-            // Calculate the dimensions of the window
-            int width = updateRect.right - updateRect.left;
-            int height = updateRect.bottom - updateRect.top;
-
-            int minNavBarWidth = 150; // Minimum width for the navbar
-            int availableWidth = width - minNavBarWidth;
-
-            int userManagementWidth = availableWidth * 2 / 3;
-
-            // Calculate dimensions for the "Login Activity" section
-            RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
-
-            // Set updateRect dimensions to match the "Login Activity" section
-            updateRect.left = loginActivityRect.left;
-            updateRect.right = loginActivityRect.right - 20;
-
-            // Apply the same logic as in step 1 to limit scroll positions
-            if (Admin::loginActivityScrollPos < 0) {
-                Admin::loginActivityScrollPos = 0;
-            }
-
-            int maxScrollPos = Admin::totalContentHeight - (Admin::loginActivityRect.bottom - Admin::loginActivityRect.top);
-            if (Admin::loginActivityScrollPos > maxScrollPos) {
-                Admin::loginActivityScrollPos = maxScrollPos;
-            }
-
-            // Update the scrollbar position
-            SCROLLINFO scrollInfo;
-            scrollInfo.cbSize = sizeof(SCROLLINFO);
-            scrollInfo.fMask = SIF_POS;
-            scrollInfo.nPos = Admin::loginActivityScrollPos;
-
-            SetScrollInfo(Admin::loginActivityScrollBar, SB_CTL, &scrollInfo, TRUE);
-
-            // Invalidate only the region that needs repainting due to scrolling
-            InvalidateRect(hWnd, &updateRect, FALSE);
-        }
+        HandleVerticalScroll(hWnd, wParam, lParam);
         break;
-    }
     case WM_ERASEBKGND:
         return true;
     case WM_PAINT:
-        if (activeWindow == 0) {
-            Login::Display(hWnd);
-        }
-        else if (activeWindow == 1) {
-            Admin::Display(hWnd);
-        }
+        ChangeActiveWindow(hWnd);
         break;
     case WM_DESTROY:
-        if (gdiPlusInitialized)
-        {
-            // Shutdown GDI+ when the window is destroyed
-            Gdiplus::GdiplusShutdown(g_GdiplusToken);
-            gdiPlusInitialized = false;
-        }
-
+        CleanUpGdiPlus();
         PostQuitMessage(0);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+void InitializeGdiPlus()
+{
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    Gdiplus::GdiplusStartup(&g_GdiplusToken, &gdiplusStartupInput, NULL);
+}
+
+void SetMinimumWindowSize(HWND hWnd, LPARAM lParam) {
+    HDC hdc = GetDC(hWnd);
+    int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+    int dpiY = GetDeviceCaps(hdc, LOGPIXELSY);
+    ReleaseDC(hWnd, hdc);
+
+    int minWidth = MulDiv(800, dpiX, 96); 
+    int minHeight = MulDiv(600, dpiY, 96); 
+
+    MINMAXINFO* pMinMaxInfo = (MINMAXINFO*)lParam;
+    pMinMaxInfo->ptMinTrackSize.x = minWidth;
+    pMinMaxInfo->ptMinTrackSize.y = minHeight;
+}
+
+void ShowLoginErrorLabel(HWND hWnd, LPARAM lParam) {
+    Login login;
+    if (login.errorLabel != nullptr)
+    {
+        int errorLabelWidth = 300;
+        int screenWidth = LOWORD(lParam);
+        int leftMargin = (screenWidth - errorLabelWidth) / 2;
+        SetWindowPos(login.errorLabel, NULL, leftMargin, 150, errorLabelWidth, 25, SWP_NOZORDER);
+    }
+}
+
+void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    int wmId = LOWORD(wParam);
+    switch (wmId)
+    {
+    case ID_BUTTON_LOGOUT:
+        if (activeWindow == 1) {
+            Admin::DestroyControls();
+        }
+        activeWindow = 0;
+        InvalidateRect(hWnd, NULL, TRUE);
+        Login login;
+        login.Display(hWnd);
+        MessageBox(hWnd, L"Logged out successfully.", L"Logout", MB_OK | MB_ICONINFORMATION);
+        break;
+    case ID_BUTTON_LOGIN:
+    {
+        std::wstring username = Login::GetUsername();
+        std::wstring password = Login::GetPassword();
+
+        if (!username.empty() && !password.empty()) {
+            if (DatabaseHelper::CheckUser(username.c_str(), password.c_str())) {
+                int user_id = DatabaseHelper::GetUserID(username.c_str(), password.c_str());
+                DatabaseHelper::StoreLoginTimestamp(user_id);
+
+                std::string role = DatabaseHelper::GetRole(username.c_str(), password.c_str());
+                std::string firstName = DatabaseHelper::GetFirstName(username.c_str(), password.c_str());
+                std::string lastName = DatabaseHelper::GetLastName(username.c_str(), password.c_str());
+
+                if (role == "administrator") {
+                    Admin::SetCurrentUserId(user_id);
+
+                    Login login;
+                    Login::DestroyControls();
+
+                    Admin admin;
+                    activeWindow = 1;
+                    InvalidateRect(hWnd, NULL, TRUE);
+                    admin.Display(hWnd);
+
+                    std::wstring welcomeMessage = L"Welcome, " + std::wstring(firstName.begin(), firstName.end()) + L" " + std::wstring(lastName.begin(), lastName.end()) + L"!";
+                    MessageBox(hWnd, welcomeMessage.c_str(), L"Welcome", MB_OK | MB_ICONINFORMATION);
+                }
+                else {
+                    Login::DisplayError(hWnd, L"Only administrators can log in.");
+                }
+            }
+            else {
+                Login::DisplayError(hWnd, L"Wrong username or password.");
+            }
+        }
+        else {
+            Login::DisplayError(hWnd, L"Please enter both username and password.");
+        }
+        break;
+    }
+    case IDM_ABOUT:
+        DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+        break;
+    case IDM_EXIT:
+        DestroyWindow(hWnd);
+        break;
+    }
+}
+
+void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam){
+    int nScrollCode = LOWORD(wParam);
+    int nPos = HIWORD(wParam);
+
+    if (lParam == (LPARAM)Admin::userManagementScrollBar) {
+        int scrollAmount = 100; 
+        switch (nScrollCode)
+        {
+        case SB_LINEUP:
+            Admin::userManagementScrollPos -= scrollAmount;
+            break;
+        case SB_LINEDOWN:
+            Admin::userManagementScrollPos += scrollAmount;
+            break;
+        case SB_THUMBPOSITION:
+            Admin::loginActivityScrollPos = nPos;
+            break;
+        }
+        RECT updateRect;
+        GetClientRect(hWnd, &updateRect);
+        updateRect.top = 110;
+        InvalidateRect(hWnd, &updateRect, FALSE);
+    }
+    else if (lParam == (LPARAM)Admin::loginActivityScrollBar) {
+        EnableWindow(Admin::loginActivityScrollBar, FALSE);
+        int scrollAmount = 800;
+
+        switch (nScrollCode)
+        {
+        case SB_LINEUP:
+            Admin::loginActivityScrollPos -= scrollAmount;
+            break;
+        case SB_LINEDOWN:
+            Admin::loginActivityScrollPos += scrollAmount;
+            break;
+        case SB_THUMBPOSITION:
+            Admin::loginActivityScrollPos = nPos;
+            break;
+        }
+
+        RECT updateRect;
+        GetClientRect(hWnd, &updateRect);
+        updateRect.top = 80;
+
+        int width = updateRect.right - updateRect.left;
+        int height = updateRect.bottom - updateRect.top;
+
+        int minNavBarWidth = 150;
+        int availableWidth = width - minNavBarWidth;
+        int userManagementWidth = availableWidth * 2 / 3;
+
+        RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
+        updateRect.left = loginActivityRect.left;
+        updateRect.right = loginActivityRect.right - 20;
+
+        if (Admin::loginActivityScrollPos < 0) {
+            Admin::loginActivityScrollPos = 0;
+        }
+
+        int maxScrollPos = Admin::totalContentHeight - (Admin::loginActivityRect.bottom - Admin::loginActivityRect.top);
+        if (Admin::loginActivityScrollPos > maxScrollPos) {
+            Admin::loginActivityScrollPos = maxScrollPos;
+        }
+
+        SCROLLINFO scrollInfo;
+        scrollInfo.cbSize = sizeof(SCROLLINFO);
+        scrollInfo.fMask = SIF_POS;
+        scrollInfo.nPos = Admin::loginActivityScrollPos;
+
+        SetScrollInfo(Admin::loginActivityScrollBar, SB_CTL, &scrollInfo, TRUE);
+        InvalidateRect(hWnd, &updateRect, FALSE);
+    }
+}
+
+void ChangeActiveWindow(HWND hWnd) {
+    if (activeWindow == 0) {
+        Login::Display(hWnd);
+    }
+    else if (activeWindow == 1) {
+        Admin::Display(hWnd);
+    }
+}
+
+void CleanUpGdiPlus()
+{
+    if (gdiPlusInitialized)
+    {
+        Gdiplus::GdiplusShutdown(g_GdiplusToken);
+        gdiPlusInitialized = false;
+    }
 }
 
 // Message handler for about box.
