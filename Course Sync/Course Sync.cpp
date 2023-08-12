@@ -273,6 +273,15 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
             break;
         }
+        case ID_BUTTON_DASHBOARD:
+        {
+            if (activeWindow == 2) {
+                activeWindow = 1;
+                InvalidateRect(hWnd, NULL, TRUE);
+                Admin::Display(hWnd);
+            }
+            break;
+        }
         case ID_BUTTON_ADD_USER:
         { 
             if (activeWindow == 1) {
