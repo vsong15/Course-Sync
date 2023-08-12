@@ -15,6 +15,8 @@ int Admin::userManagementScrollPos = 0;
 int Admin::loginActivityScrollPos = 0;
 HWND Admin::userManagementScrollBar = nullptr;
 HWND Admin::loginActivityScrollBar = nullptr;
+int Admin::totalContentHeight = 0;
+RECT Admin::loginActivityRect;
 
 void Admin::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -173,7 +175,7 @@ void Admin::Display(HWND hWnd) {
     RoundRect(hdc, userManagementRect.left, userManagementRect.top, userManagementRect.right, userManagementRect.bottom, cornerRadius, cornerRadius);
 
     // Login Activity section
-    RECT loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
+    loginActivityRect = { minNavBarWidth + userManagementWidth, 50, width, height };
     RoundRect(hdc, loginActivityRect.left, loginActivityRect.top, loginActivityRect.right, loginActivityRect.bottom, cornerRadius, cornerRadius);
 
     // Check if the section titles would overlap with the navbar
@@ -226,6 +228,9 @@ void Admin::Display(HWND hWnd) {
 
     // Store the initial startY value
     int initialStartY = startY;
+
+    // Calculate the total height of the content within the section
+    totalContentHeight = login_timestamps.size() * lineHeight;
 
     HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
     SelectObject(hdc, hSubsectionBrush);
@@ -287,6 +292,15 @@ void Admin::Display(HWND hWnd) {
 
         startY += lineHeight;
         loginTimestampsRect.top += lineHeight; // Move to the next line
+
+        // Calculate the bottom position of the last displayed timestamp
+        int lastTimestampBottom = startY + totalContentHeight - lineHeight;
+
+        // Check if the bottom position of the last timestamp is within the visible section
+        if (lastTimestampBottom < loginActivityRect.bottom - textTopMargin) {
+            // Adjust the scroll position so that the last timestamp is visible
+            Admin::loginActivityScrollPos = totalContentHeight - (loginActivityRect.bottom - textTopMargin - startY);
+        }
     }
 
     // Customize the scrollbar appearance
@@ -294,9 +308,15 @@ void Admin::Display(HWND hWnd) {
     scrollInfo.cbSize = sizeof(SCROLLINFO);
     scrollInfo.fMask = SIF_ALL;
     scrollInfo.nMin = 0;
-    scrollInfo.nMax = 100; // Set the total content height
+    scrollInfo.nMax = totalContentHeight; // Set the total content height
     scrollInfo.nPage = height; // Set the height of the visible area
     scrollInfo.nPos = Admin::loginActivityScrollPos;
+
+    // Make sure that the current scroll position is within the valid range
+    if (Admin::loginActivityScrollPos > scrollInfo.nMax) {
+        Admin::loginActivityScrollPos = scrollInfo.nMax;
+    }
+
     SetScrollInfo(loginActivityScrollBar, SB_CTL, &scrollInfo, TRUE);
 
     // Cleanup

@@ -17,6 +17,8 @@ public:
 	static int loginActivityScrollPos;
 	static HWND userManagementScrollBar;
 	static HWND loginActivityScrollBar;
+	static int totalContentHeight;
+	static RECT loginActivityRect;
 
 	static void SetCurrentUserId(int userId) {
 		currentUserId = userId;

@@ -347,6 +347,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             updateRect.left = loginActivityRect.left;
             updateRect.right = loginActivityRect.right - 20;
 
+            // Apply the same logic as in step 1 to limit scroll positions
+            if (Admin::loginActivityScrollPos < 0) {
+                Admin::loginActivityScrollPos = 0;
+            }
+
+            int maxScrollPos = Admin::totalContentHeight - (Admin::loginActivityRect.bottom - Admin::loginActivityRect.top);
+            if (Admin::loginActivityScrollPos > maxScrollPos) {
+                Admin::loginActivityScrollPos = maxScrollPos;
+            }
+
+            // Update the scrollbar position
+            SCROLLINFO scrollInfo;
+            scrollInfo.cbSize = sizeof(SCROLLINFO);
+            scrollInfo.fMask = SIF_POS;
+            scrollInfo.nPos = Admin::loginActivityScrollPos;
+
+            SetScrollInfo(Admin::loginActivityScrollBar, SB_CTL, &scrollInfo, TRUE);
+
             // Invalidate only the region that needs repainting due to scrolling
             InvalidateRect(hWnd, &updateRect, FALSE);
         }
