@@ -9,6 +9,8 @@ using namespace Gdiplus;
 HWND AddUser::logoutButton = nullptr;
 HWND AddUser::addUsernameLabel = nullptr;
 HWND AddUser::addUsernameTextBox = nullptr;
+HWND AddUser::addPasswordLabel = nullptr;
+HWND AddUser::addPasswordTextBox = nullptr;
 
 void AddUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -116,6 +118,47 @@ void AddUser::Display(HWND hWnd) {
         // Set light gray background color for the input field
         SetWindowLongPtr(addUsernameTextBox, GWL_EXSTYLE, GetWindowLongPtr(addUsernameTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
         SetLayeredWindowAttributes(addUsernameTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
+    }
+
+    // Update or create the username input field and label
+    RECT addPasswordRect;
+    int passwordLabelWidth = 100; // Width of the "Username:" label
+    int passwordInputWidth = 200; // Width of the input field
+    int passwordInputHeight = 25; // Height of the input field
+
+    // Center the input field below the "Add User" text
+    centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
+    centerY = subsectionRect.top + 150; // Adjust this value as needed
+
+    // Calculate the left coordinate for the input field
+    inputLeft = centerX - (passwordLabelWidth + passwordInputWidth) / 2;
+
+    SetRect(&addPasswordRect, inputLeft, centerY, inputLeft + passwordLabelWidth + passwordInputWidth, centerY + passwordInputHeight);
+
+    if (addPasswordTextBox != NULL)
+    {
+        SetWindowPos(addPasswordLabel, NULL, addPasswordRect.left, addPasswordRect.top, passwordLabelWidth, addPasswordRect.bottom - addPasswordRect.top, SWP_NOZORDER);
+        SetWindowPos(addPasswordTextBox, NULL, addPasswordRect.left + passwordLabelWidth, addPasswordRect.top, addPasswordRect.right - addPasswordRect.left - passwordLabelWidth, addPasswordRect.bottom - addPasswordRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        // Create the "Username:" label with improved visual appearance
+        addPasswordLabel = CreateWindowW(L"STATIC", L"Password:", WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE, addPasswordRect.left, addPasswordRect.top, passwordLabelWidth, passwordInputHeight, hWnd, NULL, NULL, NULL);
+
+        // Create the username input field with improved visual appearance and resizable style
+        addPasswordTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
+            addPasswordRect.left + passwordLabelWidth, addPasswordRect.top, passwordInputWidth, passwordInputHeight,
+            hWnd, NULL, NULL, NULL);
+
+        // Set font for the input field
+        HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(addPasswordLabel, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+        SendMessage(addPasswordTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+
+        // Set light gray background color for the input field
+        SetWindowLongPtr(addPasswordTextBox, GWL_EXSTYLE, GetWindowLongPtr(addPasswordTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+        SetLayeredWindowAttributes(addPasswordTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
     // Calculate the center position for the logo
