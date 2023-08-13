@@ -224,8 +224,12 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     {
         case ID_BUTTON_LOGOUT:
         {
-            if (activeWindow == 1 || activeWindow == 2) {
+            if (activeWindow == 1) {
                 Admin::DestroyControls();
+            }
+            else if (activeWindow == 2) {
+                Admin::DestroyControls();
+                AddUser::DestroyControls();
             }
             activeWindow = 0;
             InvalidateRect(hWnd, NULL, TRUE);
@@ -299,7 +303,18 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 Admin::DestroyScrollBars();
             }
             activeWindow = 2;
-            InvalidateRect(hWnd, NULL, TRUE);
+            RECT contentRect;
+
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            contentRect.left = 150;
+            contentRect.top = 0;
+            contentRect.right = width;
+            contentRect.bottom = height;
+            InvalidateRect(hWnd, &contentRect, TRUE);
             AddUser::Display(hWnd);
             break;
     
@@ -399,6 +414,9 @@ void ChangeActiveWindow(HWND hWnd) {
     }
     else if (activeWindow == 1) {
         Admin::Display(hWnd);
+    }
+    else if (activeWindow == 2) {
+        AddUser::Display(hWnd);
     }
 }
 
