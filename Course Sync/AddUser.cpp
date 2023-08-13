@@ -206,4 +206,12 @@ void AddUser::DestroyControls() {
         DestroyWindow(addUsernameTextBox);
         addUsernameTextBox = nullptr;
     }
+    if (addPasswordLabel != nullptr) {
+        DestroyWindow(addPasswordLabel);
+        addPasswordLabel = nullptr;
+    }
+    if (addPasswordTextBox != nullptr) {
+        DestroyWindow(addPasswordTextBox);
+        addPasswordTextBox = nullptr;
+    }
 }
