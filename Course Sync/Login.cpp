@@ -64,7 +64,7 @@ void Login::Display(HWND hWnd)
     int newRightMargin = leftMargin + textFieldWidth + labelWidth + 40;  // Increase the right margin
 
     // Define the desired font size for the username label
-    int usernameLabelFontSize = 22;
+    int usernameLabelFontSize = 24;
 
     // Create the font with the desired size for the username label
     HFONT hUsernameLabelFont = CreateFont(
@@ -109,13 +109,13 @@ void Login::Display(HWND hWnd)
             usernameRect.left, usernameRect.top, usernameRect.right - usernameRect.left, usernameRect.bottom - usernameRect.top,
             hWnd, NULL, NULL, NULL);
 
-        HFONT hUsernameFont = CreateFont(22, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+        HFONT hUsernameFont = CreateFont(24, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
             OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
         SendMessage(usernameTextBox, WM_SETFONT, (WPARAM)hUsernameFont, TRUE);
     }
 
     // Define the desired font size for the password label
-    int passwordLabelFontSize = 22;
+    int passwordLabelFontSize = 24;
 
     // Create the font with the desired size for the password label
     HFONT hPasswordLabelFont = CreateFont(
@@ -160,7 +160,7 @@ void Login::Display(HWND hWnd)
             passwordRect.left, passwordRect.top, passwordRect.right - passwordRect.left, passwordRect.bottom - passwordRect.top,
             hWnd, NULL, NULL, NULL);
 
-        HFONT hPasswordFont = CreateFont(22, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+        HFONT hPasswordFont = CreateFont(24, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
             OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
         SendMessage(passwordTextBox, WM_SETFONT, (WPARAM)hPasswordFont, TRUE);
     }
