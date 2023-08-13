@@ -88,7 +88,7 @@ void AddUser::Display(HWND hWnd) {
 
     // Center the input field below the "Add User" text
     int centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
-    int centerY = subsectionRect.top + 50; // Adjust this value as needed
+    int centerY = subsectionRect.top + 40; // Adjust this value as needed
 
     // Calculate the left coordinate for the input field
     int inputLeft = centerX - (usernameLabelWidth + usernameInputWidth) / 2;
@@ -103,7 +103,7 @@ void AddUser::Display(HWND hWnd) {
     else
     {
         // Create the "Username:" label with improved visual appearance
-        addUsernameLabel = CreateWindowW(L"STATIC", L"Username:", WS_CHILD | WS_VISIBLE, addUsernameRect.left, addUsernameRect.top, usernameLabelWidth, usernameInputHeight, hWnd, NULL, NULL, NULL);
+        addUsernameLabel = CreateWindowW(L"STATIC", L"Username:", WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE, addUsernameRect.left, addUsernameRect.top, usernameLabelWidth, usernameInputHeight, hWnd, NULL, NULL, NULL);
 
         // Create the username input field with improved visual appearance and resizable style
         addUsernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
@@ -113,6 +113,7 @@ void AddUser::Display(HWND hWnd) {
         // Set font for the input field
         HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
             OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(addUsernameLabel, WM_SETFONT, (WPARAM)hInputFont, TRUE);
         SendMessage(addUsernameTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
 
         // Set light gray background color for the input field
@@ -128,7 +129,7 @@ void AddUser::Display(HWND hWnd) {
 
     // Center the input field below the "Add User" text
     centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
-    centerY = subsectionRect.top + 150; // Adjust this value as needed
+    centerY = subsectionRect.top + 80; // Adjust this value as needed
 
     // Calculate the left coordinate for the input field
     inputLeft = centerX - (passwordLabelWidth + passwordInputWidth) / 2;
