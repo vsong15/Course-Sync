@@ -14,6 +14,7 @@ public:
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
 	static void DestroyControls();
 	static void DestroyScrollBars();
+	static void DestroyLogoutButton();
 	static int userManagementScrollPos;
 	static int loginActivityScrollPos;
 	static HWND userManagementScrollBar;

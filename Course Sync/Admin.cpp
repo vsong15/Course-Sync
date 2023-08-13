@@ -375,3 +375,10 @@ void Admin::DestroyScrollBars() {
         loginActivityScrollBar = nullptr;
     }
 }
+
+void Admin::DestroyLogoutButton() {
+    if (logoutButton != nullptr) {
+        DestroyWindow(logoutButton);
+        logoutButton = nullptr;
+    }
+}

@@ -301,6 +301,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         { 
             if (activeWindow == 1) {
                 Admin::DestroyScrollBars();
+                Admin::DestroyLogoutButton();
             }
             activeWindow = 2;
             RECT contentRect;
