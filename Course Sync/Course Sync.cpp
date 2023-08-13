@@ -280,6 +280,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         case ID_BUTTON_DASHBOARD:
         {
             if (activeWindow == 2) {
+                AddUser::DestroyControls();
                 activeWindow = 1;
                 RECT contentRect;
 
