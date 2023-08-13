@@ -28,8 +28,22 @@ void AddUser::Display(HWND hWnd) {
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
+    // Calculate the section dimensions
+    int navBarWidth = 150; // Width of the navigation bar
+    int sectionWidth = width - navBarWidth; // Width of the subsection excluding the navigation bar
+    int sectionHeight = height; // Adjust the height as needed
+
+    int cornerRadius = 10; // Adjust the corner radius as needed
+    int textTopMargin = 5; // Adjust the top margin for text as needed
+
+    // Create a subsection background rectangle
+    RECT subsectionRect = { navBarWidth, 50, width, sectionHeight }; // Adjust the left coordinate to account for the navigation bar
+    HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
+    SelectObject(hdc, hSubsectionBrush);
+    RoundRect(hdc, subsectionRect.left, subsectionRect.top, subsectionRect.right, subsectionRect.bottom, cornerRadius, cornerRadius);
+
     HBRUSH hDarkBrush = CreateSolidBrush(RGB(12, 42, 51));
-    RECT navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
+    RECT navBarRect = { 0, 0, navBarWidth, height }; // Width is set to the navigation bar width
     FillRect(hdc, &navBarRect, hDarkBrush);
 
     RECT logoutButtonRect;
@@ -83,6 +97,7 @@ void AddUser::Display(HWND hWnd) {
     // Cleanup
     DeleteObject(hWelcomeFont);
     DeleteObject(hDarkBrush);
+    DeleteObject(hSubsectionBrush);
 
     EndPaint(hWnd, &ps);
 }

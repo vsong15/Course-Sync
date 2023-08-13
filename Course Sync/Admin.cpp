@@ -169,7 +169,6 @@ void Admin::Display(HWND hWnd) {
     SelectObject(hdc, hSectionBrush);
 
     int cornerRadius = 10; // Adjust the corner radius as needed
-
     int textTopMargin = 5; // Adjust the top margin for text as needed
 
     // User Management section
