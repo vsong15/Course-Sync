@@ -7,6 +7,8 @@
 using namespace Gdiplus;
 
 HWND AddUser::logoutButton = nullptr;
+HWND AddUser::addUsernameLabel = nullptr;
+HWND AddUser::addUsernameTextBox = nullptr;
 
 void AddUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -76,6 +78,46 @@ void AddUser::Display(HWND hWnd) {
         );
     }
 
+    // Update or create the username input field and label
+    RECT addUsernameRect;
+    int usernameLabelWidth = 100; // Width of the "Username:" label
+    int usernameInputWidth = 200; // Width of the input field
+    int usernameInputHeight = 25; // Height of the input field
+
+    // Center the input field below the "Add User" text
+    int centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
+    int centerY = subsectionRect.top + 50; // Adjust this value as needed
+
+    // Calculate the left coordinate for the input field
+    int inputLeft = centerX - (usernameLabelWidth + usernameInputWidth) / 2;
+
+    SetRect(&addUsernameRect, inputLeft, centerY, inputLeft + usernameLabelWidth + usernameInputWidth, centerY + usernameInputHeight);
+
+    if (addUsernameTextBox != NULL)
+    {
+        SetWindowPos(addUsernameLabel, NULL, addUsernameRect.left, addUsernameRect.top, usernameLabelWidth, addUsernameRect.bottom - addUsernameRect.top, SWP_NOZORDER);
+        SetWindowPos(addUsernameTextBox, NULL, addUsernameRect.left + usernameLabelWidth, addUsernameRect.top, addUsernameRect.right - addUsernameRect.left - usernameLabelWidth, addUsernameRect.bottom - addUsernameRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        // Create the "Username:" label with improved visual appearance
+        addUsernameLabel = CreateWindowW(L"STATIC", L"Username:", WS_CHILD | WS_VISIBLE, addUsernameRect.left, addUsernameRect.top, usernameLabelWidth, usernameInputHeight, hWnd, NULL, NULL, NULL);
+
+        // Create the username input field with improved visual appearance and resizable style
+        addUsernameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
+            addUsernameRect.left + usernameLabelWidth, addUsernameRect.top, usernameInputWidth, usernameInputHeight,
+            hWnd, NULL, NULL, NULL);
+
+        // Set font for the input field
+        HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(addUsernameTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+
+        // Set light gray background color for the input field
+        SetWindowLongPtr(addUsernameTextBox, GWL_EXSTYLE, GetWindowLongPtr(addUsernameTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+        SetLayeredWindowAttributes(addUsernameTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -112,5 +154,13 @@ void AddUser::DestroyControls() {
     if (logoutButton != nullptr) {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;
+    }
+    if (addUsernameLabel != nullptr) {
+        DestroyWindow(addUsernameLabel);
+        addUsernameLabel = nullptr;
+    }
+    if (addUsernameTextBox != nullptr) {
+        DestroyWindow(addUsernameTextBox);
+        addUsernameTextBox = nullptr;
     }
 }
