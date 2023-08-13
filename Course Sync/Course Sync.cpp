@@ -145,7 +145,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 static int activeWindow = 0;
 static bool gdiPlusInitialized = false;
-void InitializeGdiPlus();
+void InitializeGdiPlus(HWND hWnd);
 void SetMinimumWindowSize(HWND hWnd, LPARAM lParam);
 void ShowLoginErrorLabel(HWND hWnd, LPARAM lParam);
 void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -157,7 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_CREATE:
-        InitializeGdiPlus();
+        InitializeGdiPlus(hWnd);
         gdiPlusInitialized = true;
         return 0;
     case WM_GETMINMAXINFO:
@@ -187,10 +187,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void InitializeGdiPlus()
+static Bitmap* pBitmapBuffer = nullptr; 
+static Graphics* pBufferGraphics = nullptr;
+
+void InitializeGdiPlus(HWND hWnd)
 {
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     Gdiplus::GdiplusStartup(&g_GdiplusToken, &gdiplusStartupInput, NULL);
+
+    pBitmapBuffer = new Bitmap(-1, -1);
+    pBufferGraphics = new Graphics(pBitmapBuffer);
 }
 
 void SetMinimumWindowSize(HWND hWnd, LPARAM lParam) {
@@ -294,7 +300,6 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 contentRect.right = width;
                 contentRect.bottom = height;
                 InvalidateRect(hWnd, &contentRect, TRUE);
-                Admin::Display(hWnd);
             }
             break;
         }
@@ -317,7 +322,6 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             contentRect.right = width;
             contentRect.bottom = height;
             InvalidateRect(hWnd, &contentRect, TRUE);
-            AddUser::Display(hWnd);
             break;
     
         }
@@ -411,6 +415,10 @@ void HandleVerticalScroll(HWND hWnd, WPARAM wParam, LPARAM lParam){
 }
 
 void ChangeActiveWindow(HWND hWnd) {
+    // Clear the buffer with a background color (optional)
+    pBufferGraphics->Clear(Color(255, 255, 255, 255)); // Adjust the color as needed
+
+    // Call the display function based on activeWindow value
     if (activeWindow == 0) {
         Login::Display(hWnd);
     }
@@ -420,12 +428,25 @@ void ChangeActiveWindow(HWND hWnd) {
     else if (activeWindow == 2) {
         AddUser::Display(hWnd);
     }
+
+    // Draw onto the buffer using pBufferGraphics after displaying
+    // For example:
+    Pen pen(Color(255, 0, 0)); // Red pen
+    pBufferGraphics->DrawLine(&pen, 200, 200, 400, 400); // Example drawing
+
+    // Render the buffer onto the window
+    Graphics windowGraphics(hWnd);
+    windowGraphics.DrawImage(pBitmapBuffer, 0, 0);
 }
 
 void CleanUpGdiPlus()
 {
     if (gdiPlusInitialized)
     {
+        // Delete the offscreen buffer and its Graphics object
+        delete pBufferGraphics;
+        delete pBitmapBuffer;
+
         Gdiplus::GdiplusShutdown(g_GdiplusToken);
         gdiPlusInitialized = false;
     }
