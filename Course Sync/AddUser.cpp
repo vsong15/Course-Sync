@@ -17,6 +17,8 @@ HWND AddUser::addFirstNameLabel = nullptr;
 HWND AddUser::addFirstNameTextBox = nullptr;
 HWND AddUser::addLastNameLabel = nullptr;
 HWND AddUser::addLastNameTextBox = nullptr;
+HWND AddUser::addEmailLabel = nullptr;
+HWND AddUser::addEmailTextBox = nullptr;
 int AddUser::selectedRole = -1;
 
 void AddUser::Display(HWND hWnd) {
@@ -278,6 +280,40 @@ void AddUser::Display(HWND hWnd) {
         SetLayeredWindowAttributes(addLastNameTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
+    RECT addEmailRect;
+    int emailLabelWidth = 100;
+    int emailInputWidth = 200;
+    int emailInputHeight = 25;
+
+    centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
+    centerY = subsectionRect.top + 360;
+
+    inputLeft = centerX - (emailLabelWidth + emailInputWidth) / 2;
+
+    SetRect(&addEmailRect, inputLeft, centerY, inputLeft + emailLabelWidth + emailInputWidth, centerY + emailInputHeight);
+
+    if (addEmailTextBox != NULL)
+    {
+        SetWindowPos(addEmailLabel, NULL, addEmailRect.left, addEmailRect.top, emailLabelWidth, addEmailRect.bottom - addEmailRect.top, SWP_NOZORDER);
+        SetWindowPos(addEmailTextBox, NULL, addEmailRect.left + emailLabelWidth, addEmailRect.top, addEmailRect.right - addEmailRect.left - emailLabelWidth, addEmailRect.bottom - addEmailRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        addEmailLabel = CreateWindowW(L"STATIC", L"Email:", WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE, addEmailRect.left, addEmailRect.top, emailLabelWidth, emailInputHeight, hWnd, NULL, NULL, NULL);
+
+        addEmailTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
+            addEmailRect.left + emailLabelWidth, addEmailRect.top, emailInputWidth, emailInputHeight,
+            hWnd, NULL, NULL, NULL);
+
+        HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(addEmailLabel, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+        SendMessage(addEmailTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+
+        SetWindowLongPtr(addEmailTextBox, GWL_EXSTYLE, GetWindowLongPtr(addEmailTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+        SetLayeredWindowAttributes(addEmailTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -350,5 +386,13 @@ void AddUser::DestroyControls() {
     if (addLastNameTextBox != nullptr) {
         DestroyWindow(addLastNameTextBox);
         addLastNameTextBox = nullptr;
+    }
+    if (addEmailLabel != nullptr) {
+        DestroyWindow(addEmailLabel);
+        addEmailLabel = nullptr;
+    }
+    if (addEmailTextBox != nullptr) {
+        DestroyWindow(addEmailTextBox);
+        addEmailTextBox = nullptr;
     }
 }

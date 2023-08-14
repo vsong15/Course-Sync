@@ -14,6 +14,8 @@ private:
 	static HWND addFirstNameTextBox;
 	static HWND addLastNameLabel;
 	static HWND addLastNameTextBox;
+	static HWND addEmailLabel;
+	static HWND addEmailTextBox;
 public: 
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
