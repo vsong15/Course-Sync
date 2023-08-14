@@ -19,6 +19,7 @@ HWND AddUser::addLastNameLabel = nullptr;
 HWND AddUser::addLastNameTextBox = nullptr;
 HWND AddUser::addEmailLabel = nullptr;
 HWND AddUser::addEmailTextBox = nullptr;
+HWND AddUser::submitUserButton = nullptr;
 int AddUser::selectedRole = -1;
 
 void AddUser::Display(HWND hWnd) {
@@ -314,6 +315,34 @@ void AddUser::Display(HWND hWnd) {
         SetLayeredWindowAttributes(addEmailTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
+    RECT submitUserButtonRect; // Change variable name to submitUserButtonRect
+    int submitUserButtonWidth = 100; // Change variable name to submitUserButtonWidth
+    int submitUserButtonHeight = 30; // Change variable name to submitUserButtonHeight
+    int submitUserButtonX = (subsectionRect.left + subsectionRect.right - submitUserButtonWidth) / 2;
+    int submitUserButtonY = 470;
+
+    SetRect(&submitUserButtonRect, submitUserButtonX, submitUserButtonY, submitUserButtonX + submitUserButtonWidth, submitUserButtonY + submitUserButtonHeight);
+
+    // Update or create the submitUserButton button
+    if (submitUserButton != NULL) {
+        SetWindowPos(submitUserButton, NULL, submitUserButtonRect.left, submitUserButtonRect.top, submitUserButtonRect.right - submitUserButtonRect.left, submitUserButtonRect.bottom - submitUserButtonRect.top, SWP_NOZORDER);
+    }
+    else {
+        submitUserButton = CreateWindowW(
+            L"BUTTON",                       // Predefined class; Unicode assumed
+            L"Submit",                       // Button text
+            WS_CHILD | WS_VISIBLE,           // Styles
+            submitUserButtonRect.left,       // x position
+            submitUserButtonRect.top,        // y position
+            submitUserButtonRect.right - submitUserButtonRect.left,  // Button width
+            submitUserButtonRect.bottom - submitUserButtonRect.top,  // Button height
+            hWnd,                            // Parent window
+            NULL,         // No menu
+            NULL,                            // Instance handle
+            NULL                             // Additional application data
+        );
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -394,5 +423,9 @@ void AddUser::DestroyControls() {
     if (addEmailTextBox != nullptr) {
         DestroyWindow(addEmailTextBox);
         addEmailTextBox = nullptr;
+    }
+    if (submitUserButton != nullptr) {
+        DestroyWindow(submitUserButton);
+        submitUserButton = nullptr;
     }
 }
