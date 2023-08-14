@@ -14,4 +14,9 @@ public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
 	static void DestroyControls();
+	static HWND roleComboBox;
+	static int selectedRole;
+	static void setSelectedRole(int role) {
+		selectedRole = role;
+	}
 };

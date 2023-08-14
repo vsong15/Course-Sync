@@ -168,6 +168,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
     case WM_COMMAND:
         ButtonClicked(hWnd, message, wParam, lParam);
+
+        wchar_t selectedRoleName[100];
+        if (LOWORD(wParam) == ID_COMBOBOX_ROLE && HIWORD(wParam) == CBN_SELCHANGE) {
+            int selectedIndex = SendMessage(AddUser::roleComboBox, CB_GETCURSEL, 0, 0);
+            switch (selectedIndex) {
+            case 0:
+                // Selected Administrator
+                AddUser::setSelectedRole(1);
+                wcscpy_s(selectedRoleName, L"Administrator");
+                break;
+            case 1:
+                // Selected Student
+                AddUser::setSelectedRole(2);
+                wcscpy_s(selectedRoleName, L"Student");
+                break;
+            case 2:
+                // Selected Faculty
+                AddUser::setSelectedRole(3);
+                wcscpy_s(selectedRoleName, L"Faculty");
+                break;
+            case 3:
+                // Selected Staff
+                AddUser::setSelectedRole(4);
+                wcscpy_s(selectedRoleName, L"Staff");
+                break;
+            }
+            // Show an alert with the selected role
+            wchar_t selectedRoleMessage[100];
+            swprintf_s(selectedRoleMessage, L"Selected Role: %s", selectedRoleName);
+            MessageBox(hWnd, selectedRoleMessage, L"Selected Role", MB_OK | MB_ICONINFORMATION);
+        }
         return 0;
     case WM_VSCROLL:
         HandleVerticalScroll(hWnd, wParam, lParam);

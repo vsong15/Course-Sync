@@ -1,6 +1,7 @@
 #include "AddUser.h"
 #include <Winuser.h>
 #include "Constants.h"
+#include "CommCtrl.h"
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
 
@@ -11,6 +12,8 @@ HWND AddUser::addUsernameLabel = nullptr;
 HWND AddUser::addUsernameTextBox = nullptr;
 HWND AddUser::addPasswordLabel = nullptr;
 HWND AddUser::addPasswordTextBox = nullptr;
+HWND AddUser::roleComboBox = nullptr;
+int AddUser::selectedRole = -1;
 
 void AddUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -162,6 +165,47 @@ void AddUser::Display(HWND hWnd) {
         SetLayeredWindowAttributes(addPasswordTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
+    RECT roleComboRect;
+    // Calculate the center position for the role combo box
+    int comboWidth = 200; // Width of the combo box
+    int comboHeight = 120; // Height of the combo box
+    int comboLeft = centerX - comboWidth / 2;
+    int comboTop = centerY + 120 - comboHeight / 2; // Center vertically based on centerY
+
+    SetRect(&roleComboRect, comboLeft, comboTop, comboLeft + comboWidth, comboTop + comboHeight);
+
+    if (roleComboBox != NULL) {
+        SetWindowPos(roleComboBox, NULL, roleComboRect.left, roleComboRect.top, comboWidth, comboHeight, SWP_NOZORDER);
+    }
+    else {
+        roleComboBox = CreateWindowW(
+            L"COMBOBOX",                    // Predefined class; Unicode assumed
+            L"SELECT A ROLE",                           // No text needed initially
+            WS_CHILD | WS_VISIBLE | CBS_SIMPLE, // Styles
+            roleComboRect.left,             // x position
+            roleComboRect.top,              // y position
+            comboWidth,                     // Combo box width
+            comboHeight,                    // Combo box height
+            hWnd,                           // Parent window
+            (HMENU)ID_COMBOBOX_ROLE,        // Control identifier
+            NULL,                           // Instance handle
+            NULL                            // Additional application data
+        );
+
+        // Add role options to the combo box
+        SendMessage(roleComboBox, CB_ADDSTRING, 0, (LPARAM)L"Administrator");
+        SendMessage(roleComboBox, CB_ADDSTRING, 0, (LPARAM)L"Student");
+        SendMessage(roleComboBox, CB_ADDSTRING, 0, (LPARAM)L"Faculty");
+        SendMessage(roleComboBox, CB_ADDSTRING, 0, (LPARAM)L"Staff");
+
+        // Create a font with size 20
+        HFONT hFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+
+        // Set the font to the combo box
+        SendMessage(roleComboBox, WM_SETFONT, (WPARAM)hFont, TRUE);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -214,5 +258,9 @@ void AddUser::DestroyControls() {
     if (addPasswordTextBox != nullptr) {
         DestroyWindow(addPasswordTextBox);
         addPasswordTextBox = nullptr;
+    }
+    if (roleComboBox != nullptr) {
+        DestroyWindow(roleComboBox);
+        roleComboBox = nullptr;
     }
 }
