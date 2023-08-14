@@ -13,6 +13,8 @@ HWND AddUser::addUsernameTextBox = nullptr;
 HWND AddUser::addPasswordLabel = nullptr;
 HWND AddUser::addPasswordTextBox = nullptr;
 HWND AddUser::roleComboBox = nullptr;
+HWND AddUser::addFirstNameLabel = nullptr;
+HWND AddUser::addFirstNameTextBox = nullptr;
 int AddUser::selectedRole = -1;
 
 void AddUser::Display(HWND hWnd) {
@@ -206,6 +208,40 @@ void AddUser::Display(HWND hWnd) {
         SendMessage(roleComboBox, WM_SETFONT, (WPARAM)hFont, TRUE);
     }
 
+    RECT addFirstNameRect;
+    int firstNameLabelWidth = 100;
+    int firstNameInputWidth = 200;
+    int firstNameInputHeight = 25;
+
+    centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
+    centerY = subsectionRect.top + 280;
+
+    inputLeft = centerX - (firstNameLabelWidth + firstNameInputWidth) / 2;
+
+    SetRect(&addFirstNameRect, inputLeft, centerY, inputLeft + firstNameLabelWidth + firstNameInputWidth, centerY + firstNameInputHeight);
+
+    if (addFirstNameTextBox != NULL)
+    {
+        SetWindowPos(addFirstNameLabel, NULL, addFirstNameRect.left, addFirstNameRect.top, firstNameLabelWidth, addFirstNameRect.bottom - addFirstNameRect.top, SWP_NOZORDER);
+        SetWindowPos(addFirstNameTextBox, NULL, addFirstNameRect.left + firstNameLabelWidth, addFirstNameRect.top, addFirstNameRect.right - addFirstNameRect.left - firstNameLabelWidth, addFirstNameRect.bottom - addFirstNameRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        addFirstNameLabel = CreateWindowW(L"STATIC", L"First Name:", WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE, addFirstNameRect.left, addFirstNameRect.top, firstNameLabelWidth, firstNameInputHeight, hWnd, NULL, NULL, NULL);
+
+        addFirstNameTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
+            addFirstNameRect.left + firstNameLabelWidth, addFirstNameRect.top, firstNameInputWidth, firstNameInputHeight,
+            hWnd, NULL, NULL, NULL);
+
+        HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(addFirstNameLabel, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+        SendMessage(addFirstNameTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+
+        SetWindowLongPtr(addFirstNameTextBox, GWL_EXSTYLE, GetWindowLongPtr(addFirstNameTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+        SetLayeredWindowAttributes(addFirstNameTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -262,5 +298,13 @@ void AddUser::DestroyControls() {
     if (roleComboBox != nullptr) {
         DestroyWindow(roleComboBox);
         roleComboBox = nullptr;
+    }
+    if (addFirstNameLabel != nullptr) {
+        DestroyWindow(addFirstNameLabel);
+        addFirstNameLabel = nullptr;
+    }
+    if (addFirstNameTextBox != nullptr) {
+        DestroyWindow(addFirstNameTextBox);
+        addFirstNameTextBox = nullptr;
     }
 }
