@@ -12,6 +12,8 @@ private:
 	static HWND addPasswordTextBox;
 	static HWND addFirstNameLabel;
 	static HWND addFirstNameTextBox;
+	static HWND addLastNameLabel;
+	static HWND addLastNameTextBox;
 public: 
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
