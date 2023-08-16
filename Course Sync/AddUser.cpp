@@ -3,6 +3,7 @@
 #include "Constants.h"
 #include "CommCtrl.h"
 #include <gdiplus.h>
+#include <string>
 #pragma comment(lib, "gdiplus.lib")
 
 using namespace Gdiplus;
@@ -373,6 +374,66 @@ void AddUser::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int hei
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
+}
+
+std::wstring AddUser::GetUsername()
+{
+    int length = GetWindowTextLengthW(addUsernameTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(addUsernameTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
+std::wstring AddUser::GetPassword()
+{
+    int length = GetWindowTextLengthW(addPasswordTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(addPasswordTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
+std::wstring AddUser::GetFirstName()
+{
+    int length = GetWindowTextLengthW(addFirstNameTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(addFirstNameTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
+std::wstring AddUser::GetLastName()
+{
+    int length = GetWindowTextLengthW(addLastNameTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(addLastNameTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
+std::wstring AddUser::GetEmail()
+{
+    int length = GetWindowTextLengthW(addEmailTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(addEmailTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
 }
 
 void AddUser::DestroyControls() {

@@ -358,7 +358,41 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         }
         case ID_BUTTON_SUBMIT_USER:
         {
-            MessageBox(hWnd, L"Button Pressed", L"Alert", MB_OK | MB_ICONINFORMATION);
+            int role = AddUser::selectedRole;
+            std::wstring username = AddUser::GetUsername();
+            std::wstring password = AddUser::GetPassword();
+            std::wstring firstName = AddUser::GetFirstName();
+            std::wstring lastName = AddUser::GetLastName();
+            std::wstring email = AddUser::GetEmail();
+
+            std::wstring roleName;
+            switch (role) {
+                case 1:
+                    roleName = L"Administrator";
+                    break;
+                case 2:
+                    roleName = L"Student";
+                    break;
+                case 3:
+                    roleName = L"Faculty";
+                    break;
+                case 4:
+                    roleName = L"Staff";
+                    break;
+            }
+
+            // Construct the message with the variable values
+            std::wstring message = L"The following user has been created:"
+                L"\nRole: " + roleName +
+                L"\nUsername: " + username.c_str() +
+                L"\nPassword: " + password.c_str() +
+                L"\nFirst Name: " + firstName.c_str() +
+                L"\nLast Name: " + lastName.c_str() +
+                L"\nEmail: " + email.c_str();
+
+
+            // Display an alert using MessageBox
+            MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
             break;
         }
         case IDM_ABOUT:
