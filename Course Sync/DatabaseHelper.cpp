@@ -376,24 +376,29 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
         LVITEM lvItem;
         lvItem.mask = LVIF_TEXT;
         lvItem.iItem = i;
-
         lvItem.iSubItem = 0;
+
         const char* username = PQgetvalue(res, i, 0);
         int usernameLength = static_cast<int>(strlen(username)) + 1;
         wchar_t* usernameW = new wchar_t[usernameLength];
         MultiByteToWideChar(CP_UTF8, 0, username, -1, usernameW, usernameLength);
         lvItem.pszText = usernameW;
-        ListView_InsertItem(hTable, &lvItem);
+
+        int insertedItemIndex = ListView_InsertItem(hTable, &lvItem);
 
         for (int j = 1; j < 5; ++j) {
-            lvItem.iSubItem = j;
             const char* columnValue = PQgetvalue(res, i, j);
             int valueLength = static_cast<int>(strlen(columnValue)) + 1;
             wchar_t* valueW = new wchar_t[valueLength];
             MultiByteToWideChar(CP_UTF8, 0, columnValue, -1, valueW, valueLength);
-            lvItem.pszText = valueW;
-            ListView_SetItem(hTable, &lvItem);
+
+            // Use ListView_SetItemText to set subitem text
+            ListView_SetItemText(hTable, insertedItemIndex, j, valueW);
+
+            delete[] valueW; // Don't forget to clean up memory
         }
+
+        delete[] usernameW; // Don't forget to clean up memory
     }
 
     PQclear(res);

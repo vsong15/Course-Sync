@@ -9,6 +9,7 @@
 using namespace Gdiplus;
 
 HWND ViewUsers::logoutButton = nullptr;
+HWND ViewUsers::usersTable = nullptr;
 
 void ViewUsers::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -78,7 +79,33 @@ void ViewUsers::Display(HWND hWnd) {
         );
     }
 
-    PopulateTable(hWnd, sectionHeight, sectionHeight);
+
+    RECT viewUsersTableRect;
+    int viewUsersTableWidth = sectionWidth * 0.8; // Change variable name to submitUserButtonWidth
+    int viewUsersTableHeight = sectionHeight * 0.6; // Change variable name to submitUserButtonHeight
+    int viewUsersTableX = (subsectionRect.left + subsectionRect.right - viewUsersTableWidth) / 2;
+    int viewUsersTableY = (sectionHeight - viewUsersTableHeight) / 2;
+
+    SetRect(&viewUsersTableRect, viewUsersTableX, viewUsersTableY, viewUsersTableX + viewUsersTableWidth, viewUsersTableY + viewUsersTableHeight);
+
+    if (usersTable != NULL) {
+        SetWindowPos(usersTable, NULL, viewUsersTableRect.left, viewUsersTableRect.top, viewUsersTableRect.right - viewUsersTableRect.left, viewUsersTableRect.bottom - viewUsersTableRect.top, SWP_NOZORDER);
+    }
+    else {
+        // Create the table control
+        usersTable = CreateWindow(
+            WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | LVS_REPORT | WS_BORDER,
+            viewUsersTableRect.left,       // x position
+            viewUsersTableRect.top,        // y position
+            viewUsersTableRect.right - viewUsersTableRect.left,  // Button width
+            viewUsersTableRect.bottom - viewUsersTableRect.top,  // Button height
+            hWnd, 
+            NULL, 
+            NULL, 
+            NULL)
+        ;
+        PopulateTable(hWnd, viewUsersTableWidth, viewUsersTableHeight);
+    }
 
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
@@ -120,10 +147,6 @@ void ViewUsers::DestroyControls() {
 }
 
 void ViewUsers::PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight) {
-    // Create the table control
-    HWND usersTable = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | LVS_REPORT,
-        150, 50, sectionWidth, sectionHeight, hWnd, NULL, NULL, NULL);
-    
     // Casted LPWSTR strings
     LPWSTR usernameColumn = const_cast<LPWSTR>(L"Username");
     LPWSTR roleColumn = const_cast<LPWSTR>(L"Role");

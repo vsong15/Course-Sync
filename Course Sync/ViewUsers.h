@@ -5,6 +5,7 @@
 class ViewUsers {
 private: 
 	static HWND logoutButton;
+	static HWND usersTable;
 public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
