@@ -379,16 +379,17 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
             // Insert the user information into the database
             if (DatabaseHelper::InsertUser(role, username, password, firstName, lastName, email)) {
-                // Construct the success message with the variable values
+                // Construct the message with the variable values
                 std::wstring message = L"The following user has been created:"
                     L"\nRole: " + roleName +
-                    L"\nUsername: " + username +
-                    L"\nPassword: " + password +
-                    L"\nFirst Name: " + firstName +
-                    L"\nLast Name: " + lastName +
-                    L"\nEmail: " + email;
+                    L"\nUsername: " + username.c_str() +
+                    L"\nPassword: " + password.c_str() +
+                    L"\nFirst Name: " + firstName.c_str() +
+                    L"\nLast Name: " + lastName.c_str() +
+                    L"\nEmail: " + email.c_str();
 
-                // Display a success alert using MessageBox
+
+                // Display an alert using MessageBox
                 MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
             }
             else {

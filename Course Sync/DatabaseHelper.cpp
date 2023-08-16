@@ -340,13 +340,8 @@ bool DatabaseHelper::InsertUser(int role, const std::wstring& username, const st
         lastNameUtf8.c_str(), emailUtf8.c_str());
 
     PGresult* result = ExecuteQuery(conn, query);
-    if (!result) {
-        fprintf(stderr, "Failed to insert user\n");
-        CloseDatabaseConnection(conn);
-        return false;
-    }
-
     PQclear(result);
+
     CloseDatabaseConnection(conn);
 
     return true;
