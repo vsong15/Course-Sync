@@ -36,7 +36,7 @@
     <ClInclude Include="AddUser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GetUser.h">
+    <ClInclude Include="ViewUsers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClCompile Include="AddUser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GetUser.cpp">
+    <ClCompile Include="ViewUsers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

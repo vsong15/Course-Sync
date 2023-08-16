@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-class GetUser {
+class ViewUsers {
 private: 
 	static HWND logoutButton;
 public:

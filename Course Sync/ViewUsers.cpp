@@ -1,4 +1,4 @@
-#include "GetUser.h"
+#include "ViewUsers.h"
 #include <Winuser.h>
 #include "Constants.h"
 #include <gdiplus.h>
@@ -6,9 +6,9 @@
 
 using namespace Gdiplus;
 
-HWND GetUser::logoutButton = nullptr;
+HWND ViewUsers::logoutButton = nullptr;
 
-void GetUser::Display(HWND hWnd) {
+void ViewUsers::Display(HWND hWnd) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -92,7 +92,7 @@ void GetUser::Display(HWND hWnd) {
     HFONT hWelcomeFont = CreateFont(36, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
     SelectObject(hdc, hWelcomeFont);
-    DrawTextCenter(hdc, L"Get User", 5, width + 150, height);
+    DrawTextCenter(hdc, L"View Users", 5, width + 150, height);
 
     // Cleanup
     DeleteObject(hWelcomeFont);
@@ -102,13 +102,13 @@ void GetUser::Display(HWND hWnd) {
     EndPaint(hWnd, &ps);
 }
 
-void GetUser::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height) {
+void ViewUsers::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height) {
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
 }
 
-void GetUser::DestroyControls() {
+void ViewUsers::DestroyControls() {
     if (logoutButton != nullptr) {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;

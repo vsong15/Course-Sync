@@ -11,7 +11,7 @@
 #include <objidl.h>
 #include <gdiplus.h>
 #include "AddUser.h"
-#include "GetUser.h"
+#include "ViewUsers.h"
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -258,7 +258,7 @@ void HandleDashboardButtonClick(HWND hWnd) {
         activeWindow = 1;
     }
     else if (activeWindow == 3) {
-        GetUser::DestroyControls();
+        ViewUsers::DestroyControls();
         activeWindow = 1;
     }
 
@@ -292,7 +292,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
             else if (activeWindow == 3) {
                 Admin::DestroyControls();
-                GetUser::DestroyControls();
+                ViewUsers::DestroyControls();
             }
             activeWindow = 0;
             InvalidateRect(hWnd, NULL, TRUE);
@@ -367,7 +367,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             break;
     
         }
-        case ID_BUTTON_GET_USER:
+        case ID_BUTTON_VIEW_USERS:
         {
             if (activeWindow == 1) {
                 Admin::DestroyScrollBars();
@@ -542,7 +542,7 @@ void ChangeActiveWindow(HWND hWnd) {
         AddUser::Display(hWnd);
     }
     else if (activeWindow == 3) {
-        GetUser::Display(hWnd);
+        ViewUsers::Display(hWnd);
     }
 
     // Draw onto the buffer using pBufferGraphics after displaying

@@ -152,14 +152,14 @@ void Admin::Display(HWND hWnd) {
     {
         getUserButton = CreateWindowW(
             L"BUTTON",                   // Predefined class; Unicode assumed
-            L"Get User",                    // Button text
+            L"View Users",                    // Button text
             WS_CHILD | WS_VISIBLE,       // Styles
             getUserButtonRect.left,             // x position
             getUserButtonRect.top,              // y position
             getUserButtonRect.right - getUserButtonRect.left,    // Button width
             getUserButtonRect.bottom - getUserButtonRect.top,    // Button height
             hWnd,                      // Parent window
-            (HMENU)ID_BUTTON_GET_USER,                        // No menu
+            (HMENU)ID_BUTTON_VIEW_USERS,                        // No menu
             NULL,                        // Instance handle
             NULL                         // Additional application data
         );
