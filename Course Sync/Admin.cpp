@@ -10,6 +10,7 @@ using namespace Gdiplus;
 HWND Admin::logoutButton = nullptr;
 HWND Admin::dashboardButton = nullptr;
 HWND Admin::addUserButton = nullptr;
+HWND Admin::getUserButton = nullptr;
 int Admin::currentUserId = 0;
 int Admin::userManagementScrollPos = 0;
 int Admin::loginActivityScrollPos = 0;
@@ -129,6 +130,36 @@ void Admin::Display(HWND hWnd) {
             addUserButtonRect.bottom - addUserButtonRect.top,    // Button height
             hWnd,                      // Parent window
             (HMENU)ID_BUTTON_ADD_USER,                        // No menu
+            NULL,                        // Instance handle
+            NULL                         // Additional application data
+        );
+    }
+
+    RECT getUserButtonRect;
+    buttonWidth = 120; // Adjust the button width as needed
+    buttonHeight = 40; // Adjust the button height as needed
+    buttonX = 14;      // Adjust the X position as needed
+    buttonY = 180; // Adjust the Y position as needed
+
+    SetRect(&getUserButtonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+
+    // Update or create the login button
+    if (getUserButton != NULL)
+    {
+        SetWindowPos(getUserButton, NULL, getUserButtonRect.left, getUserButtonRect.top, getUserButtonRect.right - getUserButtonRect.left, getUserButtonRect.bottom - getUserButtonRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        getUserButton = CreateWindowW(
+            L"BUTTON",                   // Predefined class; Unicode assumed
+            L"Get User",                    // Button text
+            WS_CHILD | WS_VISIBLE,       // Styles
+            getUserButtonRect.left,             // x position
+            getUserButtonRect.top,              // y position
+            getUserButtonRect.right - getUserButtonRect.left,    // Button width
+            getUserButtonRect.bottom - getUserButtonRect.top,    // Button height
+            hWnd,                      // Parent window
+            (HMENU)ID_BUTTON_GET_USER,                        // No menu
             NULL,                        // Instance handle
             NULL                         // Additional application data
         );
@@ -361,6 +392,10 @@ void Admin::DestroyControls() {
     if (loginActivityScrollBar != nullptr) {
         DestroyWindow(loginActivityScrollBar);
         loginActivityScrollBar = nullptr;
+    }
+    if (getUserButton != nullptr) {
+        DestroyWindow(getUserButton);
+        getUserButton = nullptr;
     }
 }
 

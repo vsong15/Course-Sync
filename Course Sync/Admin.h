@@ -8,6 +8,7 @@ private:
 	static HWND logoutButton;
 	static HWND dashboardButton;
 	static HWND addUserButton;
+	static HWND getUserButton;
 	static int currentUserId;
 public: 
 	static void Display(HWND hWnd);
