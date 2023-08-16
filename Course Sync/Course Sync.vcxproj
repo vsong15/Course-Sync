@@ -136,6 +136,7 @@
     <ClInclude Include="DatabaseHelper.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Admin.h" />
+    <ClInclude Include="GetUser.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +144,7 @@
     <ClCompile Include="Course Sync.cpp" />
     <ClCompile Include="DatabaseHelper.cpp" />
     <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="GetUser.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="Login.h" />
   </ItemGroup>

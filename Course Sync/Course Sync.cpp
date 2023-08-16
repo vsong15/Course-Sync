@@ -11,6 +11,7 @@
 #include <objidl.h>
 #include <gdiplus.h>
 #include "AddUser.h"
+#include "GetUser.h"
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -285,6 +286,10 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 Admin::DestroyControls();
                 AddUser::DestroyControls();
             }
+            else if (activeWindow == 3) {
+                Admin::DestroyControls();
+                GetUser::DestroyControls();
+            }
             activeWindow = 0;
             InvalidateRect(hWnd, NULL, TRUE);
             Login login;
@@ -357,6 +362,30 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             InvalidateRect(hWnd, &contentRect, TRUE);
             break;
     
+        }
+        case ID_BUTTON_GET_USER:
+        {
+            if (activeWindow == 1) {
+                Admin::DestroyScrollBars();
+                Admin::DestroyLogoutButton();
+            }
+            else if (activeWindow == 2) {
+                AddUser::DestroyControls();
+            }
+            activeWindow = 3;
+            RECT contentRect;
+
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            contentRect.left = 150;
+            contentRect.top = 0;
+            contentRect.right = width;
+            contentRect.bottom = height;
+            InvalidateRect(hWnd, &contentRect, TRUE);
+            break;
         }
         case ID_BUTTON_SUBMIT_USER:
         {
@@ -507,6 +536,9 @@ void ChangeActiveWindow(HWND hWnd) {
     }
     else if (activeWindow == 2) {
         AddUser::Display(hWnd);
+    }
+    else if (activeWindow == 3) {
+        GetUser::Display(hWnd);
     }
 
     // Draw onto the buffer using pBufferGraphics after displaying
