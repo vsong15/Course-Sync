@@ -363,31 +363,38 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
             std::wstring roleName;
             switch (role) {
-                case 1:
-                    roleName = L"Administrator";
-                    break;
-                case 2:
-                    roleName = L"Student";
-                    break;
-                case 3:
-                    roleName = L"Faculty";
-                    break;
-                case 4:
-                    roleName = L"Staff";
-                    break;
+            case 1:
+                roleName = L"Administrator";
+                break;
+            case 2:
+                roleName = L"Student";
+                break;
+            case 3:
+                roleName = L"Faculty";
+                break;
+            case 4:
+                roleName = L"Staff";
+                break;
             }
 
-            // Construct the message with the variable values
-            std::wstring message = L"The following user has been created:"
-                L"\nRole: " + roleName +
-                L"\nUsername: " + username.c_str() +
-                L"\nPassword: " + password.c_str() +
-                L"\nFirst Name: " + firstName.c_str() +
-                L"\nLast Name: " + lastName.c_str() +
-                L"\nEmail: " + email.c_str();
+            // Insert the user information into the database
+            if (DatabaseHelper::InsertUser(role, username, password, firstName, lastName, email)) {
+                // Construct the success message with the variable values
+                std::wstring message = L"The following user has been created:"
+                    L"\nRole: " + roleName +
+                    L"\nUsername: " + username +
+                    L"\nPassword: " + password +
+                    L"\nFirst Name: " + firstName +
+                    L"\nLast Name: " + lastName +
+                    L"\nEmail: " + email;
 
-            // Display an alert using MessageBox
-            MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
+                // Display a success alert using MessageBox
+                MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
+            }
+            else {
+                // Display an error alert if insertion failed
+                MessageBox(hWnd, L"Failed to insert user information into the database.", L"Error", MB_OK | MB_ICONERROR);
+            }
             break;
         }
         case IDM_ABOUT:
