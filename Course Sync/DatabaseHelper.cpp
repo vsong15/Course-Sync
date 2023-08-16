@@ -310,3 +310,44 @@ std::wstring DatabaseHelper::GetFullNameFromUserID(int user_id) {
 
     return fullName;
 }
+
+bool DatabaseHelper::InsertUser(int role, const std::wstring& username, const std::wstring& password,
+    const std::wstring& firstName, const std::wstring& lastName,
+    const std::wstring& email) {
+    std::string usernameUtf8 = WStringToString(username);
+    std::string passwordUtf8 = WStringToString(password);
+    std::string firstNameUtf8 = WStringToString(firstName);
+    std::string lastNameUtf8 = WStringToString(lastName);
+    std::string emailUtf8 = WStringToString(email);
+
+    if (usernameUtf8.empty() || passwordUtf8.empty() || firstNameUtf8.empty() ||
+        lastNameUtf8.empty() || emailUtf8.empty()) {
+        // Error handling if the conversion fails or input is empty
+        return false;
+    }
+
+    PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return false;
+    }
+
+    char query[512];
+    snprintf(query, sizeof(query),
+        "INSERT INTO users (Username, Password, Role_ID, First_Name, Last_Name, Email) "
+        "VALUES ('%s', '%s', %d, '%s', '%s', '%s')",
+        usernameUtf8.c_str(), passwordUtf8.c_str(), role, firstNameUtf8.c_str(),
+        lastNameUtf8.c_str(), emailUtf8.c_str());
+
+    PGresult* result = ExecuteQuery(conn, query);
+    if (!result) {
+        fprintf(stderr, "Failed to insert user\n");
+        CloseDatabaseConnection(conn);
+        return false;
+    }
+
+    PQclear(result);
+    CloseDatabaseConnection(conn);
+
+    return true;
+}

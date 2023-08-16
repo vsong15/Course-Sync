@@ -386,7 +386,6 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 L"\nLast Name: " + lastName.c_str() +
                 L"\nEmail: " + email.c_str();
 
-
             // Display an alert using MessageBox
             MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
             break;
