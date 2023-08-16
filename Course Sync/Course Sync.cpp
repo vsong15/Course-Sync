@@ -256,21 +256,25 @@ void HandleDashboardButtonClick(HWND hWnd) {
     if (activeWindow == 2) {
         AddUser::DestroyControls();
         activeWindow = 1;
-
-        RECT contentRect;
-        RECT rect;
-
-        GetClientRect(hWnd, &rect);
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-
-        contentRect.left = 150;
-        contentRect.top = 0;
-        contentRect.right = width;
-        contentRect.bottom = height;
-
-        InvalidateRect(hWnd, &contentRect, TRUE);
     }
+    else if (activeWindow == 3) {
+        GetUser::DestroyControls();
+        activeWindow = 1;
+    }
+
+    RECT contentRect;
+    RECT rect;
+
+    GetClientRect(hWnd, &rect);
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+
+    contentRect.left = 150;
+    contentRect.top = 0;
+    contentRect.right = width;
+    contentRect.bottom = height;
+
+    InvalidateRect(hWnd, &contentRect, TRUE);
 }
 
 void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
