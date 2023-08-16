@@ -194,10 +194,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 wcscpy_s(selectedRoleName, L"Staff");
                 break;
             }
-            // Show an alert with the selected role
-            wchar_t selectedRoleMessage[100];
-            swprintf_s(selectedRoleMessage, L"Selected Role: %s", selectedRoleName);
-            MessageBox(hWnd, selectedRoleMessage, L"Selected Role", MB_OK | MB_ICONINFORMATION);
         }
         return 0;
     case WM_VSCROLL:
