@@ -251,6 +251,27 @@ void ShowLoginErrorLabel(HWND hWnd, LPARAM lParam) {
     }
 }
 
+void HandleDashboardButtonClick(HWND hWnd) {
+    if (activeWindow == 2) {
+        AddUser::DestroyControls();
+        activeWindow = 1;
+
+        RECT contentRect;
+        RECT rect;
+
+        GetClientRect(hWnd, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+
+        contentRect.left = 150;
+        contentRect.top = 0;
+        contentRect.right = width;
+        contentRect.bottom = height;
+
+        InvalidateRect(hWnd, &contentRect, TRUE);
+    }
+}
+
 void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     int wmId = LOWORD(wParam);
     switch (wmId)
@@ -312,22 +333,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         }
         case ID_BUTTON_DASHBOARD:
         {
-            if (activeWindow == 2) {
-                AddUser::DestroyControls();
-                activeWindow = 1;
-                RECT contentRect;
-
-                RECT rect;
-                GetClientRect(hWnd, &rect);
-                int width = rect.right - rect.left;
-                int height = rect.bottom - rect.top;
-
-                contentRect.left = 150;
-                contentRect.top = 0;
-                contentRect.right = width;
-                contentRect.bottom = height;
-                InvalidateRect(hWnd, &contentRect, TRUE);
-            }
+            HandleDashboardButtonClick(hWnd);
             break;
         }
         case ID_BUTTON_ADD_USER:
@@ -388,6 +394,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                     L"\nLast Name: " + lastName.c_str() +
                     L"\nEmail: " + email.c_str();
 
+                HandleDashboardButtonClick(hWnd);
 
                 // Display an alert using MessageBox
                 MessageBox(hWnd, message.c_str(), L"User Information", MB_OK | MB_ICONINFORMATION);
