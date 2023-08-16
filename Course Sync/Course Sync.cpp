@@ -356,6 +356,11 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             break;
     
         }
+        case ID_BUTTON_SUBMIT_USER:
+        {
+            MessageBox(hWnd, L"Button Pressed", L"Alert", MB_OK | MB_ICONINFORMATION);
+            break;
+        }
         case IDM_ABOUT:
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
             break;

@@ -337,7 +337,7 @@ void AddUser::Display(HWND hWnd) {
             submitUserButtonRect.right - submitUserButtonRect.left,  // Button width
             submitUserButtonRect.bottom - submitUserButtonRect.top,  // Button height
             hWnd,                            // Parent window
-            NULL,         // No menu
+            (HMENU)ID_BUTTON_SUBMIT_USER,         // No menu
             NULL,                            // Instance handle
             NULL                             // Additional application data
         );
