@@ -1,7 +1,9 @@
 #include "ViewUsers.h"
 #include <Winuser.h>
 #include "Constants.h"
+#include <CommCtrl.h>
 #include <gdiplus.h>
+#include "DatabaseHelper.h"
 #pragma comment(lib, "gdiplus.lib")
 
 using namespace Gdiplus;
@@ -76,6 +78,8 @@ void ViewUsers::Display(HWND hWnd) {
         );
     }
 
+    PopulateTable(hWnd, sectionHeight, sectionHeight);
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -113,4 +117,41 @@ void ViewUsers::DestroyControls() {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;
     }
+}
+
+void ViewUsers::PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight) {
+    // Create the table control
+    HWND usersTable = CreateWindow(WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | LVS_REPORT,
+        150, 50, sectionWidth, sectionHeight, hWnd, NULL, NULL, NULL);
+    
+    // Casted LPWSTR strings
+    LPWSTR usernameColumn = const_cast<LPWSTR>(L"Username");
+    LPWSTR roleColumn = const_cast<LPWSTR>(L"Role");
+    LPWSTR firstNameColumn = const_cast<LPWSTR>(L"First Name");
+    LPWSTR lastNameColumn = const_cast<LPWSTR>(L"Last Name");
+    LPWSTR emailColumn = const_cast<LPWSTR>(L"Email");
+
+    // Add columns to the table
+    LVCOLUMN lvColumn;
+    lvColumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
+    lvColumn.fmt = LVCFMT_LEFT;
+    lvColumn.cx = sectionWidth / 5; // You can adjust the column width as needed
+
+    lvColumn.pszText = usernameColumn;
+    ListView_InsertColumn(usersTable, 0, &lvColumn);
+
+    lvColumn.pszText = roleColumn;
+    ListView_InsertColumn(usersTable, 1, &lvColumn);
+
+    lvColumn.pszText = firstNameColumn;
+    ListView_InsertColumn(usersTable, 2, &lvColumn);
+
+    lvColumn.pszText = lastNameColumn;
+    ListView_InsertColumn(usersTable, 3, &lvColumn);
+
+    lvColumn.pszText = emailColumn;
+    ListView_InsertColumn(usersTable, 4, &lvColumn);
+
+    // Populate the table with data from the database
+    DatabaseHelper::PopulateTableFromDatabase(usersTable);
 }

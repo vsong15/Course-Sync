@@ -21,4 +21,5 @@ public:
     static std::vector<std::string> GetLoginTimestamps(int user_id);
     static std::wstring GetFullNameFromUserID(int user_id);
     static bool InsertUser(int role, const std::wstring& username, const std::wstring& password, const std::wstring& firstName, const std::wstring& lastName, const std::wstring& email);
+    static void PopulateTableFromDatabase(HWND hTable);
 };

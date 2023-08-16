@@ -5,6 +5,7 @@
 #include <libpq-fe.h>
 #include <string>
 #include "DatabaseHelper.h"
+#include <CommCtrl.h>
 
 PGconn* DatabaseHelper::ConnectToDatabase(const char* dbname, const char* user, const char* password, const char* host, int port) {
     // Convert the port integer to a string
@@ -345,4 +346,59 @@ bool DatabaseHelper::InsertUser(int role, const std::wstring& username, const st
     CloseDatabaseConnection(conn);
 
     return true;
+}
+
+// Function to populate the table with user data from the database
+void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
+    // Connect to the PostgreSQL database
+    PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+
+    if (PQstatus(conn) != CONNECTION_OK) {
+        // Handle connection error
+        PQfinish(conn);
+        return;
+    }
+
+    PGresult* res = PQexec(conn, "SELECT u.Username, r.Role_Name, u.First_Name, u.Last_Name, u.Email "
+        "FROM users u "
+        "INNER JOIN roles r ON u.Role_ID = r.Role_ID");
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        // Handle query error
+        PQclear(res);
+        PQfinish(conn);
+        return;
+    }
+
+    int numRows = PQntuples(res);
+
+    for (int i = 0; i < numRows; ++i) {
+        LVITEM lvItem;
+        lvItem.mask = LVIF_TEXT;
+        lvItem.iItem = i;
+
+        lvItem.iSubItem = 0;
+        const char* username = PQgetvalue(res, i, 0);
+        int usernameLength = static_cast<int>(strlen(username)) + 1;
+        wchar_t* usernameW = new wchar_t[usernameLength];
+        MultiByteToWideChar(CP_UTF8, 0, username, -1, usernameW, usernameLength);
+        lvItem.pszText = usernameW;
+        ListView_InsertItem(hTable, &lvItem);
+
+        for (int j = 1; j < 5; ++j) {
+            lvItem.iSubItem = j;
+            const char* columnValue = PQgetvalue(res, i, j);
+            int valueLength = static_cast<int>(strlen(columnValue)) + 1;
+            wchar_t* valueW = new wchar_t[valueLength];
+            MultiByteToWideChar(CP_UTF8, 0, columnValue, -1, valueW, valueLength);
+            lvItem.pszText = valueW;
+            ListView_SetItem(hTable, &lvItem);
+        }
+    }
+
+    PQclear(res);
+    PQfinish(conn);
+
+    // Set extended styles to enable full row selection
+    ListView_SetExtendedListViewStyle(hTable, LVS_EX_FULLROWSELECT);
 }
