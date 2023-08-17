@@ -81,8 +81,8 @@ void ViewUsers::Display(HWND hWnd) {
 
 
     RECT viewUsersTableRect;
-    int viewUsersTableWidth = sectionWidth * 0.99; // Change variable name to submitUserButtonWidth
-    int viewUsersTableHeight = sectionHeight * 0.9; // Change variable name to submitUserButtonHeight
+    int viewUsersTableWidth = sectionWidth * 0.9; // Change variable name to submitUserButtonWidth
+    int viewUsersTableHeight = sectionHeight * 0.8; // Change variable name to submitUserButtonHeight
     int viewUsersTableX = (subsectionRect.left + subsectionRect.right - viewUsersTableWidth) / 2;
     int viewUsersTableY = (sectionHeight - viewUsersTableHeight + 50) / 2;
 
