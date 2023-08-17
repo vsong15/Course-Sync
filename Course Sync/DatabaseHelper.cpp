@@ -359,6 +359,22 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
         return;
     }
 
+    // Query to renumber user IDs
+    PGresult* renumberRes = PQexec(conn, "UPDATE users u "
+        "SET user_id = new_number.new_user_id "
+        "FROM (SELECT user_id, ROW_NUMBER() OVER (ORDER BY user_id) AS new_user_id "
+        "      FROM users) new_number "
+        "WHERE u.user_id = new_number.user_id");
+
+    if (PQresultStatus(renumberRes) != PGRES_COMMAND_OK) {
+        // Handle renumbering error
+        PQclear(renumberRes);
+        PQfinish(conn);
+        return;
+    }
+
+    PQclear(renumberRes);
+
     PGresult* res = PQexec(conn, "SELECT u.User_ID, u.Username, r.Role_Name, u.First_Name, u.Last_Name, u.Email "
         "FROM users u "
         "INNER JOIN roles r ON u.Role_ID = r.Role_ID");
