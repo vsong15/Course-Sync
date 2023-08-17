@@ -144,6 +144,10 @@ void ViewUsers::DestroyControls() {
         DestroyWindow(logoutButton);
         logoutButton = nullptr;
     }
+    if (usersTable != nullptr) {
+        DestroyWindow(usersTable);
+        usersTable = nullptr;
+    }
 }
 
 void ViewUsers::PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight) {

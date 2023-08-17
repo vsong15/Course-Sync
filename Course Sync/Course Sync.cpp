@@ -351,6 +351,9 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 Admin::DestroyScrollBars();
                 Admin::DestroyLogoutButton();
             }
+            else if (activeWindow == 3) {
+                ViewUsers::DestroyControls();
+            }
             activeWindow = 2;
             RECT contentRect;
 
