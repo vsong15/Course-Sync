@@ -258,12 +258,11 @@ void ShowLoginErrorLabel(HWND hWnd, LPARAM lParam) {
 void HandleDashboardButtonClick(HWND hWnd) {
     if (activeWindow == 2) {
         AddUser::DestroyControls();
-        activeWindow = 1;
     }
     else if (activeWindow == 3) {
         ViewUsers::DestroyControls();
-        activeWindow = 1;
     }
+    activeWindow = 1;
 
     RECT contentRect;
     RECT rect;
@@ -402,6 +401,12 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             if (activeWindow == 1) {
                 Admin::DestroyScrollBars();
                 Admin::DestroyLogoutButton();
+            }
+            else if (activeWindow == 2) {
+                AddUser::DestroyControls();
+            }
+            else if (activeWindow == 3) {
+                ViewUsers::DestroyControls();
             }
             activeWindow = 4;
             RECT contentRect;
