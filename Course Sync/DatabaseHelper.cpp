@@ -359,7 +359,7 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
         return;
     }
 
-    PGresult* res = PQexec(conn, "SELECT u.Username, r.Role_Name, u.First_Name, u.Last_Name, u.Email "
+    PGresult* res = PQexec(conn, "SELECT u.User_ID, u.Username, r.Role_Name, u.First_Name, u.Last_Name, u.Email "
         "FROM users u "
         "INNER JOIN roles r ON u.Role_ID = r.Role_ID");
 
@@ -378,15 +378,15 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
         lvItem.iItem = i;
         lvItem.iSubItem = 0;
 
-        const char* username = PQgetvalue(res, i, 0);
-        int usernameLength = static_cast<int>(strlen(username)) + 1;
-        wchar_t* usernameW = new wchar_t[usernameLength];
-        MultiByteToWideChar(CP_UTF8, 0, username, -1, usernameW, usernameLength);
-        lvItem.pszText = usernameW;
+        const char* userId = PQgetvalue(res, i, 0);
+        int userIdLength = static_cast<int>(strlen(userId)) + 1;
+        wchar_t* userIdW = new wchar_t[userIdLength];
+        MultiByteToWideChar(CP_UTF8, 0, userId, -1, userIdW, userIdLength);
+        lvItem.pszText = userIdW;
 
         int insertedItemIndex = ListView_InsertItem(hTable, &lvItem);
 
-        for (int j = 1; j < 5; ++j) {
+        for (int j = 1; j < 6; ++j) { // Adjusted to include the new User_ID column
             const char* columnValue = PQgetvalue(res, i, j);
             int valueLength = static_cast<int>(strlen(columnValue)) + 1;
             wchar_t* valueW = new wchar_t[valueLength];
@@ -398,7 +398,7 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
             delete[] valueW; // Don't forget to clean up memory
         }
 
-        delete[] usernameW; // Don't forget to clean up memory
+        delete[] userIdW; // Don't forget to clean up memory
     }
 
     PQclear(res);

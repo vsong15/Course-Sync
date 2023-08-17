@@ -152,6 +152,7 @@ void ViewUsers::DestroyControls() {
 
 void ViewUsers::PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight) {
     // Casted LPWSTR strings
+    LPWSTR userIdColumn = const_cast<LPWSTR>(L"User ID");
     LPWSTR usernameColumn = const_cast<LPWSTR>(L"Username");
     LPWSTR roleColumn = const_cast<LPWSTR>(L"Role");
     LPWSTR firstNameColumn = const_cast<LPWSTR>(L"First Name");
@@ -162,22 +163,25 @@ void ViewUsers::PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight) {
     LVCOLUMN lvColumn;
     lvColumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH;
     lvColumn.fmt = LVCFMT_LEFT;
-    lvColumn.cx = sectionWidth / 5; // You can adjust the column width as needed
+    lvColumn.cx = sectionWidth / 6; // You can adjust the column width as needed
 
-    lvColumn.pszText = usernameColumn;
+    lvColumn.pszText = userIdColumn;
     ListView_InsertColumn(usersTable, 0, &lvColumn);
 
-    lvColumn.pszText = roleColumn;
+    lvColumn.pszText = usernameColumn;
     ListView_InsertColumn(usersTable, 1, &lvColumn);
 
-    lvColumn.pszText = firstNameColumn;
+    lvColumn.pszText = roleColumn;
     ListView_InsertColumn(usersTable, 2, &lvColumn);
 
-    lvColumn.pszText = lastNameColumn;
+    lvColumn.pszText = firstNameColumn;
     ListView_InsertColumn(usersTable, 3, &lvColumn);
 
-    lvColumn.pszText = emailColumn;
+    lvColumn.pszText = lastNameColumn;
     ListView_InsertColumn(usersTable, 4, &lvColumn);
+
+    lvColumn.pszText = emailColumn;
+    ListView_InsertColumn(usersTable, 5, &lvColumn);
 
     // Populate the table with data from the database
     DatabaseHelper::PopulateTableFromDatabase(usersTable);
