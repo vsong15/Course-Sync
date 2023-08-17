@@ -6,6 +6,8 @@
 
 using namespace Gdiplus;
 
+HWND UpdateUser::logoutButton = nullptr;
+
 void UpdateUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hWnd, &ps);
@@ -26,9 +28,53 @@ void UpdateUser::Display(HWND hWnd) {
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
+    // Calculate the section dimensions
+    int navBarWidth = 150; // Width of the navigation bar
+    int sectionWidth = width - navBarWidth; // Width of the subsection excluding the navigation bar
+    int sectionHeight = height; // Adjust the height as needed
+
+    int cornerRadius = 10; // Adjust the corner radius as needed
+    int textTopMargin = 5; // Adjust the top margin for text as needed
+
+    // Create a subsection background rectangle
+    RECT subsectionRect = { navBarWidth, 50, width, sectionHeight }; // Adjust the left coordinate to account for the navigation bar
+    HBRUSH hSubsectionBrush = CreateSolidBrush(RGB(230, 230, 230)); // Color for the subsection background
+    SelectObject(hdc, hSubsectionBrush);
+    RoundRect(hdc, subsectionRect.left, subsectionRect.top, subsectionRect.right, subsectionRect.bottom, cornerRadius, cornerRadius);
+
     HBRUSH hDarkBrush = CreateSolidBrush(RGB(12, 42, 51));
     RECT navBarRect = { 0, 0, 150, height }; // Adjust the width as needed
     FillRect(hdc, &navBarRect, hDarkBrush);
+
+    RECT logoutButtonRect;
+    int buttonWidth = 120; // Adjust the button width as needed
+    int buttonHeight = 40; // Adjust the button height as needed
+    int buttonX = 14;      // Adjust the X position as needed
+    int buttonY = height - buttonHeight - 10; // Adjust the Y position as needed
+
+    SetRect(&logoutButtonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+
+    // Update or create the login button
+    if (logoutButton != NULL)
+    {
+        SetWindowPos(logoutButton, NULL, logoutButtonRect.left, logoutButtonRect.top, logoutButtonRect.right - logoutButtonRect.left, logoutButtonRect.bottom - logoutButtonRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        logoutButton = CreateWindowW(
+            L"BUTTON",                   // Predefined class; Unicode assumed
+            L"Logout",                    // Button text
+            WS_CHILD | WS_VISIBLE,       // Styles
+            logoutButtonRect.left,             // x position
+            logoutButtonRect.top,              // y position
+            logoutButtonRect.right - logoutButtonRect.left,    // Button width
+            logoutButtonRect.bottom - logoutButtonRect.top,    // Button height
+            hWnd,                      // Parent window
+            (HMENU)ID_BUTTON_LOGOUT,                        // No menu
+            NULL,                        // Instance handle
+            NULL                         // Additional application data
+        );
+    }
 
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
@@ -53,4 +99,11 @@ void UpdateUser::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int 
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
+}
+
+void UpdateUser::DestroyControls() {
+    if (logoutButton != nullptr) {
+        DestroyWindow(logoutButton);
+        logoutButton = nullptr;
+    }
 }

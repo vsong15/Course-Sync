@@ -262,6 +262,9 @@ void HandleDashboardButtonClick(HWND hWnd) {
     else if (activeWindow == 3) {
         ViewUsers::DestroyControls();
     }
+    else if (activeWindow == 4) {
+        UpdateUser::DestroyControls();
+    }
     activeWindow = 1;
 
     RECT contentRect;
@@ -295,6 +298,10 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             else if (activeWindow == 3) {
                 Admin::DestroyControls();
                 ViewUsers::DestroyControls();
+            }
+            else if (activeWindow == 4) {
+                Admin::DestroyControls();
+                UpdateUser::DestroyControls();
             }
             activeWindow = 0;
             InvalidateRect(hWnd, NULL, TRUE);
@@ -356,6 +363,9 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             else if (activeWindow == 3) {
                 ViewUsers::DestroyControls();
             }
+            else if (activeWindow == 4) {
+                UpdateUser::DestroyControls();
+            }
             activeWindow = 2;
             RECT contentRect;
 
@@ -380,6 +390,9 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
             else if (activeWindow == 2) {
                 AddUser::DestroyControls();
+            }
+            else if (activeWindow == 4) {
+                UpdateUser::DestroyControls();
             }
             activeWindow = 3;
             RECT contentRect;
