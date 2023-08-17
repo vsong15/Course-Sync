@@ -5,10 +5,10 @@
 class ViewUsers {
 private: 
 	static HWND logoutButton;
-	static HWND usersTable;
 public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
 	static void DestroyControls();
 	static void PopulateTable(HWND hWnd, int sectionWidth, int sectionHeight);
+	static HWND usersTable;
 };

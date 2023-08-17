@@ -163,6 +163,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
     case WM_GETMINMAXINFO:
         SetMinimumWindowSize(hWnd, lParam);
+        DestroyWindow(ViewUsers::usersTable);
+        ViewUsers::usersTable = nullptr;
         return 0;
     case WM_SIZE:
         ShowLoginErrorLabel(hWnd, lParam);
