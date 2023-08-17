@@ -12,6 +12,7 @@
 #include <gdiplus.h>
 #include "AddUser.h"
 #include "ViewUsers.h"
+#include "UpdateUser.h"
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
@@ -396,6 +397,27 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             InvalidateRect(hWnd, &contentRect, TRUE);
             break;
         }
+        case ID_BUTTON_UPDATE_USER:
+        {
+            if (activeWindow == 1) {
+                Admin::DestroyScrollBars();
+                Admin::DestroyLogoutButton();
+            }
+            activeWindow = 4;
+            RECT contentRect;
+
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            contentRect.left = 150;
+            contentRect.top = 0;
+            contentRect.right = width;
+            contentRect.bottom = height;
+            InvalidateRect(hWnd, &contentRect, TRUE);
+            break;
+        }
         case ID_BUTTON_SUBMIT_USER:
         {
             int role = AddUser::selectedRole;
@@ -548,6 +570,9 @@ void ChangeActiveWindow(HWND hWnd) {
     }
     else if (activeWindow == 3) {
         ViewUsers::Display(hWnd);
+    }
+    else if (activeWindow == 4) {
+        UpdateUser::Display(hWnd);
     }
 
     // Draw onto the buffer using pBufferGraphics after displaying
