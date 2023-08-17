@@ -11,6 +11,7 @@ HWND Admin::logoutButton = nullptr;
 HWND Admin::dashboardButton = nullptr;
 HWND Admin::addUserButton = nullptr;
 HWND Admin::getUserButton = nullptr;
+HWND Admin::updateUserButton = nullptr;
 int Admin::currentUserId = 0;
 int Admin::userManagementScrollPos = 0;
 int Admin::loginActivityScrollPos = 0;
@@ -162,6 +163,33 @@ void Admin::Display(HWND hWnd) {
             (HMENU)ID_BUTTON_VIEW_USERS,                        // No menu
             NULL,                        // Instance handle
             NULL                         // Additional application data
+        );
+    }
+
+    RECT updateUserButtonRect;
+    buttonWidth = 120;
+    buttonHeight = 40;
+    buttonX = 14;
+    buttonY = 240;
+
+    SetRect(&updateUserButtonRect, buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight);
+
+    if (updateUserButton != NULL) {
+        SetWindowPos(updateUserButton, NULL, updateUserButtonRect.left, updateUserButtonRect.top, updateUserButtonRect.right - updateUserButtonRect.left, updateUserButtonRect.bottom - updateUserButtonRect.top, SWP_NOZORDER);
+    }
+    else {
+        updateUserButton = CreateWindowW(
+            L"BUTTON",
+            L"Update User",
+            WS_CHILD | WS_VISIBLE,
+            updateUserButtonRect.left,
+            updateUserButtonRect.top,
+            updateUserButtonRect.right - updateUserButtonRect.left,
+            updateUserButtonRect.bottom - updateUserButtonRect.top,
+            hWnd,
+            (HMENU)ID_BUTTON_UPDATE_USER,
+            NULL,
+            NULL,
         );
     }
 
@@ -396,6 +424,10 @@ void Admin::DestroyControls() {
     if (getUserButton != nullptr) {
         DestroyWindow(getUserButton);
         getUserButton = nullptr;
+    }
+    if (updateUserButton != nullptr) {
+        DestroyWindow(updateUserButton);
+        updateUserButton = nullptr;
     }
 }
 
