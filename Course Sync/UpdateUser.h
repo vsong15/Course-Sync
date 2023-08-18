@@ -8,6 +8,7 @@ private:
 	static HWND logoutButton;
 	static HWND getUserIDLabel;
 	static HWND getUserIDTextBox;
+	static HWND fieldComboBox;
 public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);

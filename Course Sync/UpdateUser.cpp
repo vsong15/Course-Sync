@@ -9,6 +9,7 @@ using namespace Gdiplus;
 HWND UpdateUser::logoutButton = nullptr;
 HWND UpdateUser::getUserIDLabel = nullptr;
 HWND UpdateUser::getUserIDTextBox = nullptr;
+HWND UpdateUser::fieldComboBox = nullptr;
 
 void UpdateUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -119,6 +120,49 @@ void UpdateUser::Display(HWND hWnd) {
         SetLayeredWindowAttributes(getUserIDTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
+    RECT fieldComboRect;
+    // Calculate the center position for the field combo box
+    int comboWidth = 200; // Width of the combo box
+    int comboHeight = 160; // Height of the combo box
+    int comboLeft = centerX - comboWidth / 2;
+    int comboTop = centerY + 140 - comboHeight / 2; // Center vertically based on centerY
+
+    SetRect(&fieldComboRect, comboLeft, comboTop, comboLeft + comboWidth, comboTop + comboHeight);
+
+    if (fieldComboBox != NULL) {
+        SetWindowPos(fieldComboBox, NULL, fieldComboRect.left, fieldComboRect.top, comboWidth, comboHeight, SWP_NOZORDER);
+    }
+    else {
+        fieldComboBox = CreateWindowW(
+            L"COMBOBOX",                    // Predefined class; Unicode assumed
+            L"SELECT A FIELD",                           // No text needed initially
+            WS_CHILD | WS_VISIBLE | CBS_SIMPLE, // Styles
+            fieldComboRect.left,             // x position
+            fieldComboRect.top,              // y position
+            comboWidth,                     // Combo box width
+            comboHeight,                    // Combo box height
+            hWnd,                           // Parent window
+            (HMENU)ID_COMBOBOX_FIELD,       // Control identifier
+            NULL,                           // Instance handle
+            NULL                            // Additional application data
+        );
+
+        // Add field options to the combo box
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"Username");
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"Password");
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"Role");
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"First Name");
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"Last Name");
+        SendMessage(fieldComboBox, CB_ADDSTRING, 0, (LPARAM)L"Email");
+
+        // Create a font with size 20
+        HFONT hFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+
+        // Set the font to the combo box
+        SendMessage(fieldComboBox, WM_SETFONT, (WPARAM)hFont, TRUE);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -156,5 +200,9 @@ void UpdateUser::DestroyControls() {
     if (getUserIDTextBox != nullptr) {
         DestroyWindow(getUserIDTextBox);
         getUserIDTextBox = nullptr;
+    }
+    if (fieldComboBox != nullptr) {
+        DestroyWindow(fieldComboBox);
+        fieldComboBox = nullptr;
     }
 }

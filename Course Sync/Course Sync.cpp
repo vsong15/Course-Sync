@@ -180,22 +180,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case 0:
                 // Selected Administrator
                 AddUser::setSelectedRole(1);
-                wcscpy_s(selectedRoleName, L"Administrator");
                 break;
             case 1:
                 // Selected Student
                 AddUser::setSelectedRole(2);
-                wcscpy_s(selectedRoleName, L"Student");
                 break;
             case 2:
                 // Selected Faculty
                 AddUser::setSelectedRole(3);
-                wcscpy_s(selectedRoleName, L"Faculty");
                 break;
             case 3:
                 // Selected Staff
                 AddUser::setSelectedRole(4);
-                wcscpy_s(selectedRoleName, L"Staff");
                 break;
             }
         }
