@@ -6,6 +6,8 @@ class UpdateUser
 {
 private:
 	static HWND logoutButton;
+	static HWND getUserIDLabel;
+	static HWND getUserIDTextBox;
 public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
