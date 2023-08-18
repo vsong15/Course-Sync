@@ -10,6 +10,8 @@ HWND UpdateUser::logoutButton = nullptr;
 HWND UpdateUser::getUserIDLabel = nullptr;
 HWND UpdateUser::getUserIDTextBox = nullptr;
 HWND UpdateUser::fieldComboBox = nullptr;
+HWND UpdateUser::inputLabel = nullptr;
+HWND UpdateUser::inputTextBox = nullptr;
 
 void UpdateUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -163,6 +165,47 @@ void UpdateUser::Display(HWND hWnd) {
         SendMessage(fieldComboBox, WM_SETFONT, (WPARAM)hFont, TRUE);
     }
 
+    // Update or create the input field and label
+    RECT inputRect;
+    int inputLabelWidth = 100; // Width of the label
+    int inputFieldWidth = 200; // Width of the input field
+    int inputFieldHeight = 25; // Height of the input field
+
+    // Center the input field below the "Add User" text
+    centerX = subsectionRect.left + (subsectionRect.right - subsectionRect.left) / 2;
+    centerY = subsectionRect.top + 280; // Adjust this value as needed
+
+    // Calculate the left coordinate for the input field
+    inputLeft = centerX - (inputLabelWidth + inputFieldWidth) / 2;
+
+    SetRect(&inputRect, inputLeft, centerY, inputLeft + inputLabelWidth + inputFieldWidth, centerY + inputFieldHeight);
+
+    if (inputTextBox != NULL)
+    {
+        SetWindowPos(inputLabel, NULL, inputRect.left, inputRect.top, inputLabelWidth, inputRect.bottom - inputRect.top, SWP_NOZORDER);
+        SetWindowPos(inputTextBox, NULL, inputRect.left + inputLabelWidth, inputRect.top, inputRect.right - inputRect.left - inputLabelWidth, inputRect.bottom - inputRect.top, SWP_NOZORDER);
+    }
+    else
+    {
+        // Create the label with improved visual appearance
+        inputLabel = CreateWindowW(L"STATIC", L"Input:", WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE, inputRect.left, inputRect.top, inputLabelWidth, inputFieldHeight, hWnd, NULL, NULL, NULL);
+
+        // Create the input field with improved visual appearance and resizable style
+        inputTextBox = CreateWindowW(L"EDIT", L"", WS_BORDER | WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_MULTILINE | ES_WANTRETURN,
+            inputRect.left + inputLabelWidth, inputRect.top, inputFieldWidth, inputFieldHeight,
+            hWnd, NULL, NULL, NULL);
+
+        // Set font for the input field
+        HFONT hInputFont = CreateFont(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, L"Arial");
+        SendMessage(inputLabel, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+        SendMessage(inputTextBox, WM_SETFONT, (WPARAM)hInputFont, TRUE);
+
+        // Set light gray background color for the input field
+        SetWindowLongPtr(inputTextBox, GWL_EXSTYLE, GetWindowLongPtr(inputTextBox, GWL_EXSTYLE) | WS_EX_CLIENTEDGE);
+        SetLayeredWindowAttributes(inputTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -204,5 +247,13 @@ void UpdateUser::DestroyControls() {
     if (fieldComboBox != nullptr) {
         DestroyWindow(fieldComboBox);
         fieldComboBox = nullptr;
+    }
+    if (inputLabel != nullptr) {
+        DestroyWindow(inputLabel);
+        inputLabel = nullptr;
+    }
+    if (inputTextBox != nullptr) {
+        DestroyWindow(inputTextBox);
+        inputTextBox = nullptr;
     }
 }
