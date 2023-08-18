@@ -377,7 +377,8 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
 
     PGresult* res = PQexec(conn, "SELECT u.User_ID, u.Username, r.Role_Name, u.First_Name, u.Last_Name, u.Email "
         "FROM users u "
-        "INNER JOIN roles r ON u.Role_ID = r.Role_ID");
+        "INNER JOIN roles r ON u.Role_ID = r.Role_ID "
+        "ORDER BY u.User_ID ASC");
 
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         // Handle query error
