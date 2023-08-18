@@ -39,7 +39,7 @@ fi
 export DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 
 cd ..
-# sqlx migrate add create_login_timestamps_table
+# sqlx migrate add add_faculty_and_staff_roles
 sqlx migrate run
 
 >&2 echo "PostgreSQL has been migrated, ready to go!"
