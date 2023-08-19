@@ -484,9 +484,13 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
             try {
                 int updateUserID = std::stoi(updateUserIDStr);
+                int numUsers = DatabaseHelper::GetNumberOfUsers();
 
                 if (updateUserID <= 0) {
                     MessageBoxW(NULL, L"UserID is not a valid positive integer.", L"Error", MB_OK | MB_ICONERROR);
+                }
+                else if (updateUserID > numUsers) {
+                    MessageBoxW(NULL, L"UserID is greater than the number of users.", L"Error", MB_OK | MB_ICONERROR);
                 }
                 else {
                     std::wstring message = L"Update User ID: " + std::to_wstring(updateUserID);

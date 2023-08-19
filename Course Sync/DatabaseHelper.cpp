@@ -424,3 +424,32 @@ void DatabaseHelper::PopulateTableFromDatabase(HWND hTable) {
     // Set extended styles to enable full row selection
     ListView_SetExtendedListViewStyle(hTable, LVS_EX_FULLROWSELECT);
 }
+
+int DatabaseHelper::GetNumberOfUsers() {
+    PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return -1;  // Return a sentinel value to indicate an error
+    }
+
+    // Create the query to get the number of users
+    const char* query = "SELECT COUNT(*) FROM users";
+
+    PGresult* result = ExecuteQuery(conn, query);
+    if (!result) {
+        fprintf(stderr, "Failed to retrieve number of users\n");
+        CloseDatabaseConnection(conn);
+        return -1;
+    }
+
+    int numUsers = -1;  // Initialize with a sentinel value
+    int rowCount = PQntuples(result);
+    if (rowCount > 0) {
+        numUsers = atoi(PQgetvalue(result, 0, 0));
+    }
+
+    PQclear(result);
+    CloseDatabaseConnection(conn);
+
+    return numUsers;
+}
