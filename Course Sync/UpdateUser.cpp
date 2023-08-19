@@ -2,6 +2,7 @@
 #include <Winuser.h>
 #include "Constants.h"
 #include <gdiplus.h>
+#include <string>
 #pragma comment(lib, "gdiplus.lib")
 
 using namespace Gdiplus;
@@ -258,6 +259,18 @@ void UpdateUser::DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int 
     RECT rect;
     SetRect(&rect, 0, yPos, width, height);
     DrawText(hdc, text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_TOP);
+}
+
+std::wstring UpdateUser::GetUpdateUserID()
+{
+    int length = GetWindowTextLengthW(getUserIDTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(getUserIDTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
 }
 
 void UpdateUser::DestroyControls() {

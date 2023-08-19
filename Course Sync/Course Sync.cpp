@@ -173,7 +173,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         ButtonClicked(hWnd, message, wParam, lParam);
 
-        wchar_t selectedRoleName[100];
         if (LOWORD(wParam) == ID_COMBOBOX_ROLE && HIWORD(wParam) == CBN_SELCHANGE) {
             int selectedIndex = SendMessage(AddUser::roleComboBox, CB_GETCURSEL, 0, 0);
             switch (selectedIndex) {
@@ -477,6 +476,27 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 // Display an error alert if insertion failed
                 MessageBox(hWnd, L"Failed to insert user information into the database.", L"Error", MB_OK | MB_ICONERROR);
             }
+            break;
+        }
+        case ID_BUTTON_SUBMIT_USER_UPDATE:
+        {
+            std::wstring updateUserIDStr = UpdateUser::GetUpdateUserID();
+
+            try {
+                int updateUserID = std::stoi(updateUserIDStr);
+
+                if (updateUserID <= 0) {
+                    MessageBoxW(NULL, L"UserID is not a valid positive integer.", L"Error", MB_OK | MB_ICONERROR);
+                }
+                else {
+                    std::wstring message = L"Update User ID: " + std::to_wstring(updateUserID);
+                    MessageBoxW(NULL, message.c_str(), L"Alert", MB_OK | MB_ICONINFORMATION);
+                }
+            }
+            catch (const std::exception& e) {
+                MessageBoxW(NULL, L"Error converting UserID to integer.", L"Error", MB_OK | MB_ICONERROR);
+            }
+
             break;
         }
         case IDM_ABOUT:
