@@ -12,6 +12,7 @@ HWND UpdateUser::getUserIDTextBox = nullptr;
 HWND UpdateUser::fieldComboBox = nullptr;
 HWND UpdateUser::inputLabel = nullptr;
 HWND UpdateUser::inputTextBox = nullptr;
+HWND UpdateUser::submitUserUpdateButton = nullptr;
 
 void UpdateUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
@@ -206,6 +207,34 @@ void UpdateUser::Display(HWND hWnd) {
         SetLayeredWindowAttributes(inputTextBox, RGB(240, 240, 240), 0, LWA_COLORKEY);
     }
 
+    RECT submitUserUpdateButtonRect; // Change variable name to submitUserUpdateButtonRect
+    int submitUserUpdateButtonWidth = 100; // Change variable name to submitUserUpdateButtonWidth
+    int submitUserUpdateButtonHeight = 30; // Change variable name to submitUserUpdateButtonHeight
+    int submitUserUpdateButtonX = (subsectionRect.left + subsectionRect.right - submitUserUpdateButtonWidth) / 2;
+    int submitUserUpdateButtonY = 400;
+
+    SetRect(&submitUserUpdateButtonRect, submitUserUpdateButtonX, submitUserUpdateButtonY, submitUserUpdateButtonX + submitUserUpdateButtonWidth, submitUserUpdateButtonY + submitUserUpdateButtonHeight);
+
+    // Update or create the submitUserUpdateButton button
+    if (submitUserUpdateButton != NULL) {
+        SetWindowPos(submitUserUpdateButton, NULL, submitUserUpdateButtonRect.left, submitUserUpdateButtonRect.top, submitUserUpdateButtonRect.right - submitUserUpdateButtonRect.left, submitUserUpdateButtonRect.bottom - submitUserUpdateButtonRect.top, SWP_NOZORDER);
+    }
+    else {
+        submitUserUpdateButton = CreateWindowW(
+            L"BUTTON",                              // Predefined class; Unicode assumed
+            L"Submit",                              // Button text
+            WS_CHILD | WS_VISIBLE,                  // Styles
+            submitUserUpdateButtonRect.left,        // x position
+            submitUserUpdateButtonRect.top,         // y position
+            submitUserUpdateButtonRect.right - submitUserUpdateButtonRect.left,  // Button width
+            submitUserUpdateButtonRect.bottom - submitUserUpdateButtonRect.top,  // Button height
+            hWnd,                                   // Parent window
+            (HMENU)ID_BUTTON_SUBMIT_USER_UPDATE,    // No menu
+            NULL,                                   // Instance handle
+            NULL                                    // Additional application data
+        );
+    }
+
     // Calculate the center position for the logo
     int logoWidth = 140; // Set the desired width of the logo
     int logoHeight = 30; // Set the desired height of the logo
@@ -255,5 +284,9 @@ void UpdateUser::DestroyControls() {
     if (inputTextBox != nullptr) {
         DestroyWindow(inputTextBox);
         inputTextBox = nullptr;
+    }
+    if (submitUserUpdateButton != nullptr) {
+        DestroyWindow(submitUserUpdateButton);
+        submitUserUpdateButton = nullptr;
     }
 }

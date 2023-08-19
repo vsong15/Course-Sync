@@ -11,6 +11,7 @@ private:
 	static HWND fieldComboBox;
 	static HWND inputLabel;
 	static HWND inputTextBox;
+	static HWND submitUserUpdateButton;
 public:
 	static void Display(HWND hWnd);
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
