@@ -481,9 +481,10 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         case ID_BUTTON_SUBMIT_USER_UPDATE:
         {
             std::wstring updateUserIDStr = UpdateUser::GetUpdateUserID();
+            int updateUserID = 0;
 
             try {
-                int updateUserID = std::stoi(updateUserIDStr);
+                updateUserID = std::stoi(updateUserIDStr);
                 int numUsers = DatabaseHelper::GetNumberOfUsers();
 
                 if (updateUserID <= 0) {
@@ -491,10 +492,6 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 }
                 else if (updateUserID > numUsers) {
                     MessageBoxW(NULL, L"UserID is greater than the number of users.", L"Error", MB_OK | MB_ICONERROR);
-                }
-                else {
-                    std::wstring message = L"Update User ID: " + std::to_wstring(updateUserID);
-                    MessageBoxW(NULL, message.c_str(), L"Alert", MB_OK | MB_ICONINFORMATION);
                 }
             }
             catch (const std::exception& e) {
