@@ -194,6 +194,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
             }
         }
+        else if (LOWORD(wParam) == ID_COMBOBOX_FIELD && HIWORD(wParam) == CBN_SELCHANGE) {
+            int selectedIndex = SendMessage(UpdateUser::fieldComboBox, CB_GETCURSEL, 0, 0);
+            switch (selectedIndex) {
+            case 0:
+                UpdateUser::setSelectedField(L"Username");
+                break;
+            case 1:
+                UpdateUser::setSelectedField(L"Password");
+                break;
+            case 2:
+                UpdateUser::setSelectedField(L"Role");
+                break;
+            case 3:
+                UpdateUser::setSelectedField(L"FirstName");
+                break;
+            case 4:
+                UpdateUser::setSelectedField(L"LastName");
+                break;
+            case 5:
+                UpdateUser::setSelectedField(L"Email");
+                break;
+            }
+            std::wstring message = L"Selected field: " + UpdateUser::getSelectedField();
+            MessageBox(nullptr, message.c_str(), L"Field Selection", MB_OK | MB_ICONINFORMATION);
+        }
         return 0;
     case WM_VSCROLL:
         HandleVerticalScroll(hWnd, wParam, lParam);
@@ -497,6 +522,8 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             catch (const std::exception& e) {
                 MessageBoxW(NULL, L"Error converting UserID to integer.", L"Error", MB_OK | MB_ICONERROR);
             }
+
+            std::wstring field = UpdateUser::getSelectedField();
 
             break;
         }

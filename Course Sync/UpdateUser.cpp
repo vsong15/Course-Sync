@@ -14,6 +14,7 @@ HWND UpdateUser::fieldComboBox = nullptr;
 HWND UpdateUser::inputLabel = nullptr;
 HWND UpdateUser::inputTextBox = nullptr;
 HWND UpdateUser::submitUserUpdateButton = nullptr;
+std::wstring UpdateUser::field;
 
 void UpdateUser::Display(HWND hWnd) {
     PAINTSTRUCT ps;
