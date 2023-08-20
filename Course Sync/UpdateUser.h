@@ -20,6 +20,7 @@ public:
 	static void DrawTextCenter(HDC hdc, LPCWSTR text, int yPos, int width, int height);
 	static void DestroyControls();
 	static std::wstring GetUpdateUserID();
+	static std::wstring GetUpdateUserInput();
 	static void setSelectedField(std::wstring selectedField) {
 		field = selectedField;
 	}

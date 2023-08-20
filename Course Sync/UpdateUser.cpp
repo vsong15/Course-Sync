@@ -274,6 +274,18 @@ std::wstring UpdateUser::GetUpdateUserID()
     return L"";
 }
 
+std::wstring UpdateUser::GetUpdateUserInput()
+{
+    int length = GetWindowTextLengthW(inputTextBox);
+    if (length > 0)
+    {
+        std::wstring buffer(length + 1, L'\0');
+        GetWindowTextW(inputTextBox, &buffer[0], length + 1);
+        return buffer;
+    }
+    return L"";
+}
+
 void UpdateUser::DestroyControls() {
     if (logoutButton != nullptr) {
         DestroyWindow(logoutButton);

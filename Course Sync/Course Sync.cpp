@@ -216,8 +216,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 UpdateUser::setSelectedField(L"Email");
                 break;
             }
-            std::wstring message = L"Selected field: " + UpdateUser::getSelectedField();
-            MessageBox(nullptr, message.c_str(), L"Field Selection", MB_OK | MB_ICONINFORMATION);
         }
         return 0;
     case WM_VSCROLL:
@@ -524,6 +522,7 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
 
             std::wstring field = UpdateUser::getSelectedField();
+            std::wstring input = UpdateUser::GetUpdateUserInput();
 
             break;
         }
