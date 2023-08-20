@@ -532,8 +532,29 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             }
             else {
                 if (field == L"Role") {
+                    try {
+                        int roleID = std::stoi(input);
+
+                    }
+                    catch (const std::exception& e) {
+                        for (wchar_t& c : input) {
+                            c = std::tolower(c);
+                        }
+                        if (input == L"administrator") {
+                        }
+                        else if (input == L"student") {
+                        }
+                        else if (input == L"faculty") {
+                        }
+                        else if (input == L"staff") {
+                        }
+                        else {
+
+                        }
+                    }
                 }
                 else {
+
                 }
             }
 
