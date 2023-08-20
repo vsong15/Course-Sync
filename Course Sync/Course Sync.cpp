@@ -534,22 +534,41 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
                 if (field == L"Role") {
                     try {
                         int roleID = std::stoi(input);
-
+                        if (DatabaseHelper::UpdateUserRole(updateUserID, roleID)) {
+                            MessageBoxW(NULL, L"User's role updated successfully.", L"Success", MB_OK | MB_ICONINFORMATION);
+                        }
+                        else {
+                            MessageBoxW(NULL, L"Failed to update user's role.", L"Error", MB_OK | MB_ICONERROR);
+                        }
                     }
                     catch (const std::exception& e) {
+                        int roleID = 0;
                         for (wchar_t& c : input) {
                             c = std::tolower(c);
                         }
-                        if (input == L"administrator") {
+
+                        if (input.compare(L"administrator") == 0) {
+                            roleID = 1;
                         }
-                        else if (input == L"student") {
+                        else if (input.compare(L"student") == 0) {
+                            roleID = 2;
                         }
-                        else if (input == L"faculty") {
+                        else if (input.compare(L"faculty") == 0) {
+                            roleID = 3;
                         }
-                        else if (input == L"staff") {
+                        else if (input.compare(L"staff") == 0) {
+                            roleID = 4;
                         }
                         else {
+                            MessageBoxW(NULL, L"Invalid role input.", L"Error", MB_OK | MB_ICONERROR);
+                            return;
+                        }
 
+                        if (DatabaseHelper::UpdateUserRole(updateUserID, roleID)) {
+                            MessageBoxW(NULL, L"User's role updated successfully.", L"Success", MB_OK | MB_ICONINFORMATION);
+                        }
+                        else {
+                            MessageBoxW(NULL, L"Failed to update user's role.", L"Error", MB_OK | MB_ICONERROR);
                         }
                     }
                 }

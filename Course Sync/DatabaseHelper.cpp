@@ -453,3 +453,22 @@ int DatabaseHelper::GetNumberOfUsers() {
 
     return numUsers;
 }
+
+bool DatabaseHelper::UpdateUserRole(int user_id, int new_role_id) {
+    PGconn* conn = ConnectToDatabase("coursesyncdb", "postgres", "password", "localhost", 5432);
+    if (!conn) {
+        fprintf(stderr, "Failed to connect to the database\n");
+        return false;
+    }
+
+    // Create the query to update the user's role
+    char query[256];
+    snprintf(query, sizeof(query), "UPDATE users SET Role_ID = %d WHERE User_ID = %d", new_role_id, user_id);
+
+    PGresult* result = ExecuteQuery(conn, query);
+
+    PQclear(result);
+    CloseDatabaseConnection(conn);
+
+    return true;
+}
