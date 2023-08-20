@@ -524,6 +524,19 @@ void ButtonClicked(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
             std::wstring field = UpdateUser::getSelectedField();
             std::wstring input = UpdateUser::GetUpdateUserInput();
 
+            if (field.empty()) {
+                MessageBoxW(NULL, L"No field selected.", L"Error", MB_OK | MB_ICONERROR);
+            }
+            else if (input.empty()) {
+                MessageBoxW(NULL, L"Input is empty.", L"Error", MB_OK | MB_ICONERROR);
+            }
+            else {
+                if (field == L"Role") {
+                }
+                else {
+                }
+            }
+
             break;
         }
         case IDM_ABOUT:
